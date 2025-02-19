@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import toast, { Toaster } from "react-hot-toast"; // ✅ Import toast notifications
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -30,14 +31,14 @@ const ContactUs = () => {
 
       const result = await response.json();
       if (result.success) {
-        alert("Message Sent Successfully!");
+        toast.success("🎉 Message Sent Successfully!", { duration: 3000 }); // ✅ Success Toast
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
-        alert("Failed to send message, please try again.");
+        toast.error("❌ Failed to send message, please try again."); // ✅ Error Toast
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("An error occurred. Please try again later.");
+      toast.error("⚠️ An error occurred. Please try again later."); // ✅ Error Toast
     }
 
     setLoading(false);
@@ -50,6 +51,8 @@ const ContactUs = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="py-16 bg-gradient-to-b from-blue-50 to-blue-100"
     >
+      <Toaster position="top-right" reverseOrder={false} /> {/* ✅ Toast System */}
+
       <div className="max-w-7xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, scale: 0.8 }}
