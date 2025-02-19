@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+
 
 const WhoWeAre = () => {
   return (
@@ -20,7 +20,7 @@ const WhoWeAre = () => {
             Welcome to our sales and marketing company, where we specialize in helping
             customers snag great deals from the leading solar and cable companies in the
             DC, Maryland, and Virginia area. We understand that finding the right solar and
-            cable solutions for your needs can be a daunting task, which is why we're here
+            cable solutions for your needs can be a daunting task, which is why we’re here
             to make the process easier and more affordable for you.
           </p>
 

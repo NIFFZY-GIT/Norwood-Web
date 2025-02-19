@@ -61,7 +61,7 @@ const WhyChoose = () => {
             Why Choose <br /> Our Products?
           </h2>
           <p className="text-gray-600 mt-3">
-            Whether you're looking for premium quality, unique flavors, or reliability, we’ve got you covered.
+            Whether you’re looking for premium quality, unique flavors, or reliability, we’ve got you covered.
           </p>
         </motion.div>
 
