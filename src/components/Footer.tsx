@@ -19,7 +19,7 @@ const Footer = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <h2 className="text-3xl font-bold text-yellow-400">Norwood Empire</h2>
+          <h2 className="text-3xl font-bold text-green-700">Norwood Empire</h2>
           <p className="mt-2 text-gray-300">
             Bringing you premium products with quality and authenticity. 
           </p>
@@ -32,7 +32,7 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="flex flex-col space-y-2"
         >
-          <h3 className="text-xl font-semibold text-yellow-400">Quick Links</h3>
+          <h3 className="text-xl font-semibold text-green-700">Quick Links</h3>
           {["About Us", "Our Products", "Contact Us", "Blog"].map((link, index) => (
             <motion.a
               key={index}
@@ -52,7 +52,7 @@ const Footer = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <h3 className="text-xl font-semibold text-yellow-400">Follow Us</h3>
+          <h3 className="text-xl font-semibold text-green-700">Follow Us</h3>
           <div className="flex space-x-4 mt-4">
             {[
               { icon: FaFacebookF, link: "#" },
@@ -65,7 +65,7 @@ const Footer = () => {
                 href={social.link}
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 transition={{ duration: 0.3 }}
-                className="text-gray-400 hover:text-yellow-400 transition"
+                className="text-gray-400 hover:text-green-700 transition"
               >
                 <social.icon size={24} />
               </motion.a>
