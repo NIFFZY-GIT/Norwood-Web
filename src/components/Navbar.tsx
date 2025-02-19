@@ -42,7 +42,6 @@ const Navbar = () => {
             NORWOOD EMPIRE
           </span>
         </div>
-
         {/* Navigation Links */}
         <div className="flex space-x-8">
           {["/", "/Our-Story", "/Products", "/Contact-Us"].map((path, index) => (
@@ -58,7 +57,7 @@ const Navbar = () => {
                   isScrolled ? "text-white" : "text-green-600 hover:text-green-800"
                 }`}
               >
-                {path === "/" ? "HOME" : path.replace("/", "").toUpperCase()}
+               {path === "/" ? "HOME" : path.replace(/\//g, "").replace(/-/g, " ").toUpperCase()}
               </Link>
               <motion.div
                 className="absolute left-0 w-full h-0.5 bg-green-500 scale-x-0 origin-left transition-transform"
