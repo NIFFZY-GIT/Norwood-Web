@@ -90,6 +90,20 @@ const ContactUs = () => {
                 <p className="text-gray-700 hover:text-blue-600 transition">Norwood, Sri Lanka</p>
               </div>
             </div>
+            
+            {/* Google Map Embed */}
+            <div className="mt-6">
+              <iframe
+                title="Google Map"
+                className="w-full h-64 rounded-lg shadow-lg"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.159262690624!2d79.97885107568112!3d6.87151231901993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2511ff4c2142b%3A0xc20797ac18fb760f!2sNorwood%20Empire%20(PVT)%20Ltd!5e0!3m2!1sen!2slk!4v1740077158463!5m2!1sen!2slk"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+        
+
+
+            </div>
           </motion.div>
 
           {/* Right Side - Contact Form */}
