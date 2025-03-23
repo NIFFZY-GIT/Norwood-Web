@@ -1,7 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -12,7 +17,6 @@ const Footer = () => {
       className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12"
     >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-        
         {/* Left: Brand Info */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -21,7 +25,7 @@ const Footer = () => {
         >
           <h2 className="text-3xl font-bold text-green-700">Norwood Empire</h2>
           <p className="mt-2 text-gray-300">
-            Bringing you premium products with quality and authenticity. 
+            Bringing you premium products with quality and authenticity.
           </p>
         </motion.div>
 
@@ -33,17 +37,19 @@ const Footer = () => {
           className="flex flex-col space-y-2"
         >
           <h3 className="text-xl font-semibold text-green-700">Quick Links</h3>
-          {["About Us", "Our Products", "Contact Us", "Blog"].map((link, index) => (
-            <motion.a
-              key={index}
-              href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
-              whileHover={{ scale: 1.1, x: 5 }}
-              transition={{ duration: 0.3 }}
-              className="text-gray-400 hover:text-white transition"
-            >
-              {link}
-            </motion.a>
-          ))}
+          {["About Us", "Our Products", "Contact Us", "Blog"].map(
+            (link, index) => (
+              <motion.a
+                key={index}
+                href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
+                whileHover={{ scale: 1.1, x: 5 }}
+                transition={{ duration: 0.3 }}
+                className="text-gray-400 hover:text-white transition"
+              >
+                {link}
+              </motion.a>
+            )
+          )}
         </motion.div>
 
         {/* Right: Social Media */}
@@ -82,7 +88,7 @@ const Footer = () => {
         className="mt-12 text-center border-t border-gray-700 pt-4"
       >
         <p className="text-gray-400 text-sm">
-          © {new Date().getFullYear()} CodePulse. All Rights Reserved.
+          © {new Date().getFullYear()} Codezzen. All Rights Reserved.
         </p>
       </motion.div>
     </motion.footer>
