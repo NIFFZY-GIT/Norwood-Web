@@ -18,7 +18,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-background text-foreground transition-all">
         <Navbar />
-        <main className="pt-20">{children}</main> {/* Ensure padding is same as navbar height */}
+        <main className="pt-20">{children}</main>{" "}
+        {/* Ensure padding is same as navbar height */}
         <Footer />
       </body>
     </html>
