@@ -88,13 +88,13 @@ const ContactUs = () => {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <FaEnvelope className="text-blue-500 text-2xl animate-bounce" />
+                <FaEnvelope className="text-blue-500 text-2xl animate-shake" />
                 <p className="text-gray-700 hover:text-blue-600 transition">
                   norwoodlankateasinternational@gmail.com
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-blue-500 text-2xl animate-spin" />
+                <FaMapMarkerAlt className="text-blue-500 text-2xl animate-bounce" />
                 <p className="text-gray-700 hover:text-blue-600 transition">
                   Norwood, Sri Lanka
                 </p>
