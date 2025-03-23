@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import toast, { Toaster } from "react-hot-toast"; 
+import toast, { Toaster } from "react-hot-toast"; // ✅ Import toast notifications
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -14,11 +14,13 @@ const ContactUs = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -31,24 +33,17 @@ const ContactUs = () => {
 
       const result = await response.json();
       if (result.success) {
-        toast.success("🎉 Message Sent Successfully!", { duration: 3000 });
+        toast.success("🎉 Message Sent Successfully!", { duration: 3000 }); // ✅ Success Toast
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
-        toast.error("❌ Failed to send message, please try again.");
+        toast.error("❌ Failed to send message, please try again."); // ✅ Error Toast
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("⚠️ An error occurred. Please try again later.");
+      toast.error("⚠️ An error occurred. Please try again later."); // ✅ Error Toast
     }
 
     setLoading(false);
-  };
-
-  // Contact details
-  const contactInfo = {
-    phone: "+94 716 195 982",
-    email: "norwoodlankateasinternational@gmail.com",
-    location: "Norwood, Sri Lanka",
   };
 
   return (
@@ -58,8 +53,8 @@ const ContactUs = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="py-16 bg-gradient-to-b from-blue-50 to-blue-100"
     >
-      <Toaster position="top-right" />
-      
+      <Toaster position="top-right" reverseOrder={false} />{" "}
+      {/* ✅ Toast System */}
       <div className="max-w-7xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, scale: 0.8 }}
@@ -89,28 +84,22 @@ const ContactUs = () => {
               <div className="flex items-center space-x-4">
                 <FaPhone className="text-blue-500 text-2xl animate-pulse" />
                 <p className="text-gray-700 hover:text-blue-600 transition">
-                  {contactInfo.phone}
+                  +94 716 195 982
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <motion.div 
-                  animate={{ x: [0, -3, 3, 0] }} 
-                  transition={{ repeat: Infinity, duration: 0.5 }}
-                >
-                  <FaEnvelope className="text-blue-500 text-2xl" />
-                </motion.div>
+              <FaEnvelope className="text-blue-500 text-2xl animate-wiggle" />
                 <p className="text-gray-700 hover:text-blue-600 transition">
-                  {contactInfo.email}
+                  norwoodlankateasinternational@gmail.com
                 </p>
               </div>
               <div className="flex items-center space-x-4">
                 <FaMapMarkerAlt className="text-blue-500 text-2xl animate-bounce" />
                 <p className="text-gray-700 hover:text-blue-600 transition">
-                  {contactInfo.location}
+                  Norwood, Sri Lanka
                 </p>
               </div>
             </div>
-
             {/* Google Map Embed */}
             <div className="mt-6">
               <iframe
