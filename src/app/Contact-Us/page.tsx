@@ -14,7 +14,9 @@ const ContactUs = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -51,8 +53,8 @@ const ContactUs = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="py-16 bg-gradient-to-b from-blue-50 to-blue-100"
     >
-      <Toaster position="top-right" reverseOrder={false} /> {/* ✅ Toast System */}
-
+      <Toaster position="top-right" reverseOrder={false} />{" "}
+      {/* ✅ Toast System */}
       <div className="max-w-7xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, scale: 0.8 }}
@@ -71,13 +73,19 @@ const ContactUs = () => {
             transition={{ duration: 0.8 }}
             className="bg-white shadow-lg rounded-lg p-8"
           >
-            <h3 className="text-3xl font-semibold mb-4 text-blue-600">Get in Touch</h3>
-            <p className="text-gray-600 mb-6">Reach out for any inquiries or support.</p>
+            <h3 className="text-3xl font-semibold mb-4 text-blue-600">
+              Get in Touch
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Reach out for any inquiries or support.
+            </p>
 
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
                 <FaPhone className="text-blue-500 text-2xl animate-pulse" />
-                <p className="text-gray-700 hover:text-blue-600 transition">+94 716 195 982</p>
+                <p className="text-gray-700 hover:text-blue-600 transition">
+                  +94 716 195 982
+                </p>
               </div>
               <div className="flex items-center space-x-4">
                 <FaEnvelope className="text-blue-500 text-2xl animate-bounce" />
@@ -86,11 +94,13 @@ const ContactUs = () => {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-blue-500 text-2xl animate-spin-slow" />
-                <p className="text-gray-700 hover:text-blue-600 transition">Norwood, Sri Lanka</p>
+                <FaMapMarkerAlt className="text-blue-500 text-2xl animate-spin" />
+                <p className="text-gray-700 hover:text-blue-600 transition">
+                  Norwood, Sri Lanka
+                </p>
               </div>
             </div>
-            
+
             {/* Google Map Embed */}
             <div className="mt-6">
               <iframe
@@ -100,9 +110,6 @@ const ContactUs = () => {
                 allowFullScreen
                 loading="lazy"
               ></iframe>
-        
-
-
             </div>
           </motion.div>
 
@@ -113,7 +120,9 @@ const ContactUs = () => {
             transition={{ duration: 0.8 }}
             className="bg-white shadow-lg rounded-lg p-8"
           >
-            <h3 className="text-3xl font-semibold mb-4 text-blue-600">Send Us a Message</h3>
+            <h3 className="text-3xl font-semibold mb-4 text-blue-600">
+              Send Us a Message
+            </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="text"
