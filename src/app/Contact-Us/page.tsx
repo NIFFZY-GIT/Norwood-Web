@@ -88,7 +88,7 @@ const ContactUs = () => {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-              <FaEnvelope className="text-blue-500 text-2xl animate-[shake_0.3s_ease-in-out_infinite]" />
+                <FaEnvelope className="text-blue-500 text-2xl animate-pulse" />
 
                 <p className="text-gray-700 hover:text-blue-600 transition">
                   norwoodlankateasinternational@gmail.com
