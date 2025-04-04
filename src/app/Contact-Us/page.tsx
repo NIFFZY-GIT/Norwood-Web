@@ -51,7 +51,7 @@ const ContactUs = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="py-16 bg-gradient-to-b from-blue-50 to-blue-100"
+      className="py-16 bg-gradient-to-b from-blue-50 to-green-300"
     >
       <Toaster position="top-right" reverseOrder={false} />{" "}
       {/* ✅ Toast System */}
@@ -73,7 +73,7 @@ const ContactUs = () => {
             transition={{ duration: 0.8 }}
             className="bg-white shadow-lg rounded-lg p-8"
           >
-            <h3 className="text-3xl font-semibold mb-4 text-blue-600">
+            <h3 className="text-3xl font-semibold mb-4 text-green-600">
               Get in Touch
             </h3>
             <p className="text-gray-600 mb-6">
@@ -82,21 +82,21 @@ const ContactUs = () => {
 
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <FaPhone className="text-blue-500 text-2xl animate-pulse" />
-                <p className="text-gray-700 hover:text-blue-600 transition">
+                <FaPhone className="text-green-500 text-2xl animate-pulse" />
+                <p className="text-gray-700 hover:text-green-600 transition">
                   +94 716 195 982
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <FaEnvelope className="text-blue-500 text-2xl animate-pulse" />
+                <FaEnvelope className="text-green-500 text-2xl animate-pulse" />
 
-                <p className="text-gray-700 hover:text-blue-600 transition">
+                <p className="text-gray-700 hover:text-green-600 transition">
                   norwoodlankateasinternational@gmail.com
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-blue-500 text-2xl animate-bounce" />
-                <p className="text-gray-700 hover:text-blue-600 transition">
+                <FaMapMarkerAlt className="text-green-500 text-2xl animate-bounce" />
+                <p className="text-gray-700 hover:text-green-600 transition">
                   Norwood, Sri Lanka
                 </p>
               </div>
@@ -120,7 +120,7 @@ const ContactUs = () => {
             transition={{ duration: 0.8 }}
             className="bg-white shadow-lg rounded-lg p-8"
           >
-            <h3 className="text-3xl font-semibold mb-4 text-blue-600">
+            <h3 className="text-3xl font-semibold mb-4 text-green-600">
               Send Us a Message
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -131,7 +131,7 @@ const ContactUs = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
               />
               <input
                 type="email"
@@ -140,7 +140,7 @@ const ContactUs = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
               />
               <input
                 type="text"
@@ -149,7 +149,7 @@ const ContactUs = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
               />
               <textarea
                 name="message"
@@ -157,11 +157,11 @@ const ContactUs = () => {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition h-32"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition h-32"
               ></textarea>
               <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-700 transition"
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"
                 disabled={loading}
               >
                 {loading ? "Sending..." : "Send Message"}
