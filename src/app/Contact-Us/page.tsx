@@ -51,7 +51,7 @@ const ContactUs = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="py-16 bg-gradient-to-b from-blue-50 to-green-300"
+      className="py-16 bg-gradient-to-b from-white to-green-200"
     >
       <Toaster position="top-right" reverseOrder={false} />{" "}
       {/* ✅ Toast System */}
