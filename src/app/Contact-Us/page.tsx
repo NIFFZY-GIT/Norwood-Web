@@ -51,18 +51,17 @@ const ContactUs = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="py-16 bg-gradient-to-b from-white to-green-200"
+      className="py-20 bg-gradient-to-b from-black via-gray-900 to-black text-white"
     >
-      <Toaster position="top-right" reverseOrder={false} />{" "}
-      {/* ✅ Toast System */}
+      <Toaster position="top-right" reverseOrder={false} />
       <div className="max-w-7xl mx-auto px-6">
         <motion.h2
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="text-5xl font-bold text-gray-900 text-center mb-10"
+          className="text-4xl md:text-6xl font-extrabold text-center text-white-700 mb-16"
         >
-          Contact Us
+          Let&apos;s Connect
         </motion.h2>
 
         <div className="grid md:grid-cols-2 gap-10">
@@ -102,10 +101,10 @@ const ContactUs = () => {
               </div>
             </div>
             {/* Google Map Embed */}
-            <div className="mt-6">
+            <div className="mt-6 rounded-2xl overflow-hidden shadow-2xl border border-green-200 hover:scale-105 transform transition-all duration-500">
               <iframe
                 title="Google Map"
-                className="w-full h-64 rounded-lg shadow-lg"
+                className="w-full h-64"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.159262690624!2d79.97885107568112!3d6.87151231901993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2511ff4c2142b%3A0xc20797ac18fb760f!2sNorwood%20Empire%20(PVT)%20Ltd!5e0!3m2!1sen!2slk!4v1740077158463!5m2!1sen!2slk"
                 allowFullScreen
                 loading="lazy"
@@ -131,8 +130,9 @@ const ContactUs = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition"
               />
+
               <input
                 type="email"
                 name="email"
@@ -140,8 +140,9 @@ const ContactUs = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition"
               />
+
               <input
                 type="text"
                 name="subject"
@@ -149,16 +150,18 @@ const ContactUs = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition"
               />
+
               <textarea
                 name="message"
                 placeholder="Your Message"
                 value={formData.message}
                 onChange={handleChange}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 transition h-32"
-              ></textarea>
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none transition h-32"
+              />
+
               <button
                 type="submit"
                 className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition"

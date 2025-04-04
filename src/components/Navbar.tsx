@@ -30,12 +30,12 @@ const Navbar = () => {
         isScrolled ? "bg-green-700 shadow-lg" : "bg-white"
       }`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
+      <div className="max-w-8xl mx-auto flex items-center justify-between w-full">
         {/* Logo and Brand Name */}
         <div className="flex items-center space-x-4">
           <Image src="/logo.png" alt="Norwood Empire Logo" width={90} height={70} />
           <span
-            className={`font-bold text-lg transition-all ${
+            className={`font-bold text-3xl transition-all ${
               isScrolled ? "text-white" : "text-green-600"
             }`}
           >
