@@ -12,11 +12,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -24,7 +20,7 @@ const Navbar = () => {
   }, []);
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+    setMenuOpen((prev) => !prev);
   };
 
   const closeMenu = () => {
@@ -42,20 +38,20 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 w-full z-50 px-6 sm:px-10 flex items-center transition-all duration-300 ${
         isScrolled
-          ? "bg-green-700 bg-opacity-90 backdrop-blur-md shadow-lg"
-          : "bg-white bg-opacity-80 backdrop-blur-md"
+          ? "bg-white/80 backdrop-blur-lg shadow-md"
+          : "bg-transparent"
       }`}
     >
-      <div className="max-w-8xl mx-auto flex items-center justify-between w-full h-20">
-        {/* Logo and Brand Name */}
-        <div className="flex items-center space-x-4">
-          <Image src="/logo.png" alt="Norwood Empire Logo" width={70} height={60} />
+      <div className="max-w-7xl mx-auto flex items-center justify-between w-full h-20">
+        {/* Logo and Brand */}
+        <div className="flex items-center space-x-3">
+          <Image src="/logo.png" alt="Norwood Empire Logo" width={60} height={50} />
           <span
-            className={`font-bold text-2xl sm:text-3xl transition-all ${
-              isScrolled ? "text-white" : "text-green-700"
+            className={`font-bold text-2xl sm:text-3xl transition-colors ${
+              isScrolled ? "text-green-700" : "text-white"
             }`}
           >
             NORWOOD EMPIRE
@@ -65,21 +61,17 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-10">
           {navLinks.map((link, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="relative group"
-            >
+            <motion.div key={index} whileHover={{ scale: 1.05 }} className="relative group">
               <Link
                 href={link.path}
-                className={`text-lg font-medium transition-colors ${
-                  isScrolled ? "text-white" : "text-green-700 hover:text-green-900"
-                }`}
+                className={`text-lg font-medium ${
+                  isScrolled ? "text-green-700" : "text-white"
+                } hover:text-green-600 transition-colors`}
               >
                 {link.label}
               </Link>
-              {/* Hover underline animation */}
-              <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"></span>
+              {/* Hover underline */}
+              <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-green-500 group-hover:w-full transition-all duration-300"></span>
             </motion.div>
           ))}
         </div>
@@ -88,35 +80,38 @@ const Navbar = () => {
         <div className="flex md:hidden">
           <button
             onClick={toggleMenu}
-            className={`text-3xl transition-colors ${
-              isScrolled ? "text-white" : "text-green-700"
-            }`}
+            className={`text-3xl ${
+              isScrolled ? "text-green-700" : "text-green-700"
+            } transition-colors`}
             aria-label="Toggle Menu"
           >
             {menuOpen ? <HiOutlineX /> : <HiOutlineMenu />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Slide Menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-              className="absolute top-20 left-4 right-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col items-center space-y-8 py-8 md:hidden z-40"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.4, type: "spring", bounce: 0.2 }}
+              className="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl flex flex-col p-8 space-y-8 z-50 md:hidden"
             >
+              <div className="flex justify-end">
+                <button onClick={closeMenu} aria-label="Close Menu" className="text-3xl text-green-700">
+                  <HiOutlineX />
+                </button>
+              </div>
               {navLinks.map((link, index) => (
                 <Link
                   key={index}
                   href={link.path}
                   onClick={closeMenu}
-                  className="text-green-700 font-semibold text-xl hover:text-green-900 transition relative group"
+                  className="text-green-700 font-semibold text-xl hover:text-green-900 transition"
                 >
                   {link.label}
-                  {/* Hover underline animation */}
-                  <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-green-500 transition-all group-hover:w-full"></span>
                 </Link>
               ))}
             </motion.div>
