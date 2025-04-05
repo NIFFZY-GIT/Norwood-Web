@@ -94,7 +94,7 @@ const ContactUs = () => {
                 <FaEnvelope className="text-green-500 text-2xl animate-pulse" />
                 <a
                   href="mailto:norwoodlankateasinternational@gmail.com"
-                  className="text-gray-700 hover:text-green-600 text-lg transition"
+                  className="text-gray-700 hover:text-green-600 text-lg transition break-words truncate max-w-full"
                 >
                   norwoodlankateasinternational@gmail.com
                 </a>
