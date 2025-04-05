@@ -51,7 +51,7 @@ const Navbar = () => {
           <Image src="/logo.png" alt="Norwood Empire Logo" width={60} height={50} />
           <span
             className={`font-bold text-2xl sm:text-3xl transition-colors ${
-              isScrolled ? "text-green-700" : "text-white"
+              isScrolled ? "text-green-700" : "text-green-700"
             }`}
           >
             NORWOOD EMPIRE
@@ -65,7 +65,7 @@ const Navbar = () => {
               <Link
                 href={link.path}
                 className={`text-lg font-medium ${
-                  isScrolled ? "text-green-700" : "text-white"
+                  isScrolled ? "text-green-700" : "text-green-700"
                 } hover:text-green-600 transition-colors`}
               >
                 {link.label}

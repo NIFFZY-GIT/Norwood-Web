@@ -114,7 +114,7 @@ const ContactUs = () => {
 
             {/* Google Map Embed */}
             <div className="mt-8 rounded-2xl overflow-hidden shadow-2xl border border-green-200 hover:scale-105 transform transition-all duration-500">
-              <div className="w-full h-64 sm:h-80 md:h-96">
+              <div className="w-full h-64 sm:h-60 md:h-45">
                 <iframe
                   title="Google Map"
                   className="w-full h-full"
