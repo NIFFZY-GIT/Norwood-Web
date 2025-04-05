@@ -80,26 +80,36 @@ const ContactUs = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <FaPhone className="text-green-500 text-2xl animate-pulse" />
-                <p className="text-gray-700 hover:text-green-600 transition">
-                  +94 716 195 982
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <FaEnvelope className="text-green-500 text-2xl animate-pulse" />
-
-                <p className="text-gray-700 hover:text-green-600 transition">
-                  norwoodlankateasinternational@gmail.com
-                </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-green-500 text-2xl animate-bounce" />
-                <p className="text-gray-700 hover:text-green-600 transition">
-                  Norwood, Sri Lanka
-                </p>
-              </div>
-            </div>
+      <div className="flex items-center space-x-4">
+        <FaPhone className="text-green-500 text-2xl animate-pulse" />
+        <a 
+          href="tel:+94716195982"
+          className="text-gray-700 hover:text-green-600 transition"
+        >
+          +94 716 195 982
+        </a>
+      </div>
+      <div className="flex items-center space-x-4">
+        <FaEnvelope className="text-green-500 text-2xl animate-pulse" />
+        <a 
+          href="mailto:norwoodlankateasinternational@gmail.com"
+          className="text-gray-700 hover:text-green-600 transition"
+        >
+          norwoodlankateasinternational@gmail.com
+        </a>
+      </div>
+      <div className="flex items-center space-x-4">
+        <FaMapMarkerAlt className="text-green-500 text-2xl animate-bounce" />
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Norwood+Empire(PVT)Ltd+Sri+Lanka"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-gray-700 hover:text-green-600 transition"
+        >
+          Norwood Empire(PVT)Ltd, Sri Lanka
+        </a>
+      </div>
+    </div>
             {/* Google Map Embed */}
             <div className="mt-6 rounded-2xl overflow-hidden shadow-2xl border border-green-200 hover:scale-105 transform transition-all duration-500">
               <iframe
