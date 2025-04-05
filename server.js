@@ -1,4 +1,4 @@
-// server.js
+// "use server";
 
 import dotenv from "dotenv";
 import express from "express";
