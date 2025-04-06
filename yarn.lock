@@ -2127,6 +2127,11 @@ negotiator@0.6.3:
   resolved "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz"
   integrity sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==
 
+neko-ts@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.npmjs.org/neko-ts/-/neko-ts-0.0.6.tgz"
+  integrity sha512-PqKIgmqD1LwRM7fb1gqC3ITbojxB47hZmm6eUYjLUAM5w1+KnQ9TZxMDMJHl7pK0XE37ekMPSD7Vzfn0Pa6wow==
+
 next@*, next@15.1.7:
   version "15.1.7"
   resolved "https://registry.npmjs.org/next/-/next-15.1.7.tgz"

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link"; // ✅ Added Link
 import {
   FaFacebookF,
   FaInstagram,
@@ -39,15 +40,13 @@ const Footer = () => {
           <h3 className="text-xl font-semibold text-green-700">Quick Links</h3>
           {["About Us", "Our Products", "Contact Us", "Blog"].map(
             (link, index) => (
-              <motion.a
+              <Link
                 key={index}
                 href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
-                whileHover={{ scale: 1.1, x: 5 }}
-                transition={{ duration: 0.3 }}
                 className="text-gray-400 hover:text-white transition"
               >
                 {link}
-              </motion.a>
+              </Link>
             )
           )}
         </motion.div>
@@ -61,14 +60,16 @@ const Footer = () => {
           <h3 className="text-xl font-semibold text-green-700">Follow Us</h3>
           <div className="flex space-x-4 mt-4">
             {[
-              { icon: FaFacebookF, link: "#" },
-              { icon: FaInstagram, link: "#" },
-              { icon: FaTwitter, link: "#" },
-              { icon: FaLinkedinIn, link: "#" },
+              { icon: FaFacebookF, link: "https://facebook.com" },
+              { icon: FaInstagram, link: "https://instagram.com" },
+              { icon: FaTwitter, link: "https://twitter.com" },
+              { icon: FaLinkedinIn, link: "https://linkedin.com" },
             ].map((social, index) => (
               <motion.a
                 key={index}
                 href={social.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.2, rotate: 5 }}
                 transition={{ duration: 0.3 }}
                 className="text-gray-400 hover:text-green-700 transition"

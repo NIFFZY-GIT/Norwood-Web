@@ -19,13 +19,8 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  const closeMenu = () => setMenuOpen(false);
 
   const navLinks = [
     { path: "/", label: "HOME" },
@@ -48,7 +43,16 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between w-full h-20">
         {/* Logo and Brand */}
         <div className="flex items-center space-x-3">
-          <Image src="/logo.png" alt="Norwood Empire Logo" width={60} height={50} />
+          <Link href="/">
+            {/* Always wrap Image with a Link */}
+            <Image
+              src="/logo.png"
+              alt="Norwood Empire Logo"
+              width={60}
+              height={50}
+              priority
+            />
+          </Link>
           <span
             className={`font-bold text-2xl sm:text-3xl transition-colors ${
               isScrolled ? "text-green-700" : "text-green-700"
@@ -64,9 +68,7 @@ const Navbar = () => {
             <motion.div key={index} whileHover={{ scale: 1.05 }} className="relative group">
               <Link
                 href={link.path}
-                className={`text-lg font-medium ${
-                  isScrolled ? "text-green-700" : "text-green-700"
-                } hover:text-green-600 transition-colors`}
+                className="text-lg font-medium text-green-700 hover:text-green-600 transition-colors"
               >
                 {link.label}
               </Link>
@@ -80,9 +82,7 @@ const Navbar = () => {
         <div className="flex md:hidden">
           <button
             onClick={toggleMenu}
-            className={`text-3xl ${
-              isScrolled ? "text-green-700" : "text-green-700"
-            } transition-colors`}
+            className="text-3xl text-green-700 transition-colors"
             aria-label="Toggle Menu"
           >
             {menuOpen ? <HiOutlineX /> : <HiOutlineMenu />}

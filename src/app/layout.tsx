@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../components/Navbar"; // Navbar is a client component itself
+import Footer from "../components/Footer"; // Footer is a client component itself
 
 export const metadata: Metadata = {
   title: "Norwood Empire",
@@ -17,10 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background text-foreground transition-all">
-        <Navbar />
-        <main className="pt-20">{children}</main>{" "}
-        {/* Ensure padding is same as navbar height */}
-        <Footer />
+        <Navbar /> {/* Navbar is a Client Component */}
+        <main className="pt-20">{children}</main>
+        <Footer /> {/* Footer is a Client Component */}
       </body>
     </html>
   );

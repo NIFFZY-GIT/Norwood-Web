@@ -15,6 +15,7 @@
     "express": "^4.21.2",
     "framer-motion": "^12.4.5",
     "google-fonts": "^1.0.0",
+    "neko-ts": "^0.0.6",
     "next": "15.1.7",
     "nodemailer": "^6.10.0",
     "react": "^19.0.0",
