@@ -68,7 +68,7 @@ export default function NotFound() {
         }}
       />
 
-      Floating Forest Emojis
+  
     
 
       {/* Animated 404 Text */}
