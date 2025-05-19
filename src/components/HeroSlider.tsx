@@ -8,13 +8,13 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 const allSlidesData = [ // Renamed to avoid confusion
-  {
-    id: 1,
-    type: "image",
-    image: "/allbitepackings.jpg",
-    title: "THE BRAND",
-    subtitle: "OF TEA AND BITE TASTE",
-  },
+  // {
+  //   id: 1,
+  //   type: "image",
+  //   image: "/allbitepackings.jpg",
+  //   title: "THE BRAND",
+  //   subtitle: "OF TEA AND BITE TASTE",
+  // },
   {
     id: 2,
     type: "video",
@@ -23,13 +23,13 @@ const allSlidesData = [ // Renamed to avoid confusion
     title: "THE BRAND",
     subtitle: "OF TEA AND BITE TASTE",
   },
-  {
-    id: 3,
-    type: "image",
-    image: "/magic purple.jpg",
-    title: "DELICIOUS CRUNCH",
-    subtitle: "BEST FOR TEA TIME",
-  },
+  // {
+  //   id: 3,
+  //   type: "image",
+  //   image: "/magic purple.jpg",
+  //   title: "DELICIOUS CRUNCH",
+  //   subtitle: "BEST FOR TEA TIME",
+  // },
   // You could add more video slides here if needed
   // {
   //   id: 4,
