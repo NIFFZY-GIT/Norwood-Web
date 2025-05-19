@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import ProductShowcase from "@/components/ProductShowcase";
 
 const products = [
-  { id: 1, name: "Bathala Bite", description: "Premium quality tea with a rich aroma and smooth taste.", image: "public/Norwood product pics/Bathala bite/bathalabite" },
+  { id: 1, name: "Bathala Bite", description: "Premium quality tea with a rich aroma and smooth taste.", image: "public/Norwood product pics/Bathala bite/bathalabite.png" },
   { id: 2, name: "Chips", description: "Crunchy coconut snacks, perfect for a tropical treat.", image: "/coconut-rock.png" },
   { id: 3, name: "Coconut toffee", description: "Spicy and crispy murukku, a perfect companion for tea time.", image: "/magic-murukku.png" },
   { id: 4, name: "Coil murukku", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
