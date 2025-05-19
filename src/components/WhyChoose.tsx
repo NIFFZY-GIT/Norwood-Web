@@ -87,7 +87,7 @@ const WhyChoose = () => {
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.5, delay: index * 0.15 + 0.2 }}
                 className={`text-5xl font-bold mb-5 ${ // Adjusted size and margin
-                  feature.highlight ? "text-white/80" : "text-indigo-500" // Accent color for number
+                  feature.highlight ? "text-white/80" : "text-green-700" // Accent color for number
                 }`}
               >
                 {feature.id}
