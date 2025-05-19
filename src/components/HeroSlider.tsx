@@ -20,7 +20,7 @@ const allSlidesData = [ // Renamed to avoid confusion
     type: "video",
     videoSrc: "/Norwood intro.mp4",
     poster: "/garlic bite.jpg",
-    title: "DYNAMIC MOTION",
+    title: "asai neda mmm.",
     subtitle: "EXPERIENCE IT LIVE",
   },
   {
