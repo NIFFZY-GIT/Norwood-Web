@@ -17,7 +17,7 @@ const products = [
     id: 2,
     name: "Chips",
     description: "Crunchy coconut snacks, perfect for a tropical treat.",
-    image: "public/Norwood product pics/Chips/Chips2.HEIC", // Assuming this is a valid path in your public folder
+    image: "public/Norwood product pics/Chips/Chips2.png", // Assuming this is a valid path in your public folder
     price: "5.49",
     bgColor: "bg-blue-700",
   },
@@ -25,7 +25,7 @@ const products = [
     id: 3,
     name: "Coconut toffee",
     description: "Spicy and crispy murukku, a perfect companion for tea time.",
-    image: "/magic-murukku.png",
+    image: "public/Norwood product pics/Coconut toffee/greentofee.png",
     price: "7.99",
     bgColor: "bg-green-700",
   },
@@ -33,7 +33,7 @@ const products = [
     id: 4,
     name: "Coil murukku",
     description: "Traditional milk toffee with a sweet and creamy flavor.",
-    image: "/milk-toffee.png",
+    image: "public/Norwood product pics/Coil murukku/Coil murukku.png",
     price: "6.49",
     bgColor: "bg-purple-700",
   },
