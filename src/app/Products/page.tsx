@@ -4,10 +4,21 @@ import { motion } from "framer-motion";
 import ProductShowcase from "@/components/ProductShowcase";
 
 const products = [
-  { id: 1, name: "Laska Tea", description: "Premium quality tea with a rich aroma and smooth taste.", image: "/laska-tea.png" },
-  { id: 2, name: "Coconut Rock", description: "Crunchy coconut snacks, perfect for a tropical treat.", image: "/coconut-rock.png" },
-  { id: 3, name: "Magic Murukku", description: "Spicy and crispy murukku, a perfect companion for tea time.", image: "/magic-murukku.png" },
-  { id: 4, name: "Milk Toffee", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 1, name: "Bathala Bite", description: "Premium quality tea with a rich aroma and smooth taste.", image: "/Bathala bite/IMG_0236.HEIC" },
+  { id: 2, name: "Chips", description: "Crunchy coconut snacks, perfect for a tropical treat.", image: "/coconut-rock.png" },
+  { id: 3, name: "Coconut toffee", description: "Spicy and crispy murukku, a perfect companion for tea time.", image: "/magic-murukku.png" },
+  { id: 4, name: "Coil murukku", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 5, name: "Dhal", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 6, name: "Garlic Bite", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 7, name: "Ghee cookies", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 8, name: "Manioc", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 9, name: "Milk toffee", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 10, name: "Mixture", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 11, name: "Ribbon Bite", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 12, name: "Ring Bite", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 13, name: "Roasted bite", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+  { id: 14, name: "Tip tip", description: "Traditional milk toffee with a sweet and creamy flavor.", image: "/milk-toffee.png" },
+
 ];
 
 const ProductsPage = () => {
