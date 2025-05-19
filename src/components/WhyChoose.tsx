@@ -15,7 +15,7 @@ const features = [
     title: "Authentic & Unique Flavors",
     description:
       "Our recipes bring authentic, unique flavors that resonate, making every bite a delightful experience for your customers.",
-    bgColor: "bg-indigo-600", // Modern accent for highlight
+    bgColor: "bg-green-700", // Modern accent for highlight
     textColor: "text-white",
     highlight: true,
   },
