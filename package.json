@@ -6,8 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "seed:admin": "node scripts/seedAdmin.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@next/font": "^14.2.15",
