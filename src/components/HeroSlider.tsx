@@ -48,7 +48,7 @@ const HeroSlider = () => {
   // If there are no video slides, you might want to render nothing or a fallback
   if (videoSlides.length === 0) {
     return (
-      <div className="w-full h-[500px] md:h-[600px] lg:h-[700px] relative overflow-hidden flex items-center justify-center bg-gray-200">
+      <div className="w-full h-[600px] md:h-[600px] lg:h-[700px] relative overflow-hidden flex items-center justify-center bg-gray-200">
         <p className="text-gray-500">No video content available.</p>
       </div>
     );
