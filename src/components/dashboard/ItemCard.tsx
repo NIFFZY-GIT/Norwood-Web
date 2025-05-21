@@ -1,3 +1,4 @@
+'use client';
 // src/components/dashboard/ItemCard.tsx
 import { Item } from '@/lib/types';
 import NextImage from 'next/image';

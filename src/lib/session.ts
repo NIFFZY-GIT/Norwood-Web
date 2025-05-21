@@ -1,4 +1,6 @@
+'use server';
 // src/lib/session.ts
+
 import 'server-only'; // Ensures this code only runs on the server
 
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose';

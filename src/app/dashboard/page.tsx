@@ -1,9 +1,10 @@
+'use server';
 // src/app/dashboard/page.tsx
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import Sidebar from '@/components/dashboard/Sidebar'; // Ensure correct casing
 import AnalyticsChart from '@/components/dashboard/AnalyticsChart';
-import { Package, Users, BarChartBig, ArrowUpRight } from 'lucide-react'; 
+// import { Package, Users, BarChartBig, ArrowUpRight } from 'lucide-react'; 
 import { UserSession, Item } from '@/lib/types'; // Import Item if displaying items
 // Import components if you use them here
 // import ItemCard from '@/components/dashboard/ItemCard'; 
@@ -41,7 +42,7 @@ export default async function DashboardOverviewPage() {
     redirect('/login');
   }
 
-  const stats = await getDashboardStats(session.userId);
+  // const stats = await getDashboardStats(session.userId);
   const recentItems = await getRecentItems(session.userId); // Optional: fetch recent items
 
   // If you want an "Add Item" button on the overview page, you'll need state for its modal
@@ -59,8 +60,8 @@ export default async function DashboardOverviewPage() {
         </header>
 
         {/* Stats Cards (Same as before) */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* ... Stat cards ... */}
+        {/* <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* ... Stat cards ... */}{/*
           <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-300">Total Items</h3>
@@ -89,7 +90,7 @@ export default async function DashboardOverviewPage() {
             <p className="text-4xl font-bold text-slate-800 dark:text-white">{stats.newSignups}</p>
             <p className="text-sm text-red-500 flex items-center mt-1"> Static for now </p>
           </div>
-        </section>
+        </section> */}
 
         {/* Optional: Display recent items */}
         {recentItems.length > 0 && (
