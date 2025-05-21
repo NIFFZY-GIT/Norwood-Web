@@ -7,6 +7,7 @@ export interface Item {
   imageBase64: string; // Assumed mandatory for an item
   userId: string;
   createdAt: Date; // Will be a Date object
+  
 }
 
 export interface UserSession {
