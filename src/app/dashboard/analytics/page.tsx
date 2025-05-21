@@ -15,7 +15,7 @@ export default async function AnalyticsPage() {
       <main className="flex-1 p-6 md:p-8 ml-64">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Site Analytics</h1>
-          <p className="text-slate-600 dark:text-slate-400">Detailed insights into your site's performance.</p>
+          <p className="text-slate-600 dark:text-slate-400">Detailed insights into your site&apos;s performance.</p>
         </header>
         <div className="grid grid-cols-1 gap-6">
           <AnalyticsChart />
