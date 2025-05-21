@@ -1,4 +1,4 @@
-'use server';
+
 // src/app/dashboard/page.tsx
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
