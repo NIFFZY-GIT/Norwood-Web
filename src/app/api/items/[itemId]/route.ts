@@ -14,14 +14,14 @@ interface ItemFromDB extends Omit<Item, '_id' | 'createdAt'> {
 // PUT: Update an item
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { itemId: string } }
+  { params }: { params: Promise<{ itemId: string }> }
 ) {
+  const { itemId } = await params;
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { itemId } = params;
   if (!ObjectId.isValid(itemId)) {
     return NextResponse.json({ message: 'Invalid item ID format' }, { status: 400 });
   }
@@ -33,9 +33,9 @@ export async function PUT(
     const { name, description, itemCode, imageBase64 } = await request.json();
     const updateFields: Partial<Omit<Item, '_id' | 'userId' | 'createdAt'>> = {};
 
-    if (name !== undefined) updateFields.name = name;
+    if (name !== undefined)        updateFields.name = name;
     if (description !== undefined) updateFields.description = description;
-    if (itemCode !== undefined) updateFields.itemCode = itemCode;
+    if (itemCode !== undefined)    updateFields.itemCode = itemCode;
 
     if (imageBase64 !== undefined) {
       if (typeof imageBase64 === 'string' && imageBase64.startsWith('data:image')) {
@@ -58,11 +58,13 @@ export async function PUT(
     const db = client.db(process.env.MONGODB_DB_NAME);
     const itemsCollection = db.collection<ItemFromDB>('items');
 
-    // In some MongoDB driver versions, findOneAndUpdate returns the document directly or null
+    // updatedDoc will be the document itself (or null)
     const updatedDoc = await itemsCollection.findOneAndUpdate(
       { _id: new ObjectId(itemId), userId: session.userId },
       { $set: updateFields },
-      { returnDocument: 'after' }
+      {
+        returnDocument: 'after',   // ensure we get the post-update doc
+      }
     );
 
     if (!updatedDoc) {
@@ -85,12 +87,11 @@ export async function PUT(
 
     return NextResponse.json(respItem, { status: 200 });
   } catch (error: unknown) {
-    // Handle MongoDB document-too-large error
     type DatabaseError = { code?: number; message?: string };
     const dbError = error as DatabaseError;
     if (
       dbError.code === 10334 ||
-      (dbError.message?.toLowerCase().includes('document too large'))
+      dbError.message?.toLowerCase().includes('document too large')
     ) {
       return NextResponse.json(
         { message: 'Image is too large to store in the database.' },
@@ -113,14 +114,14 @@ export async function PUT(
 // DELETE: Remove an item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { itemId: string } }
+  { params }: { params: Promise<{ itemId: string }> }
 ) {
+  const { itemId } = await params;
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { itemId } = params;
   if (!ObjectId.isValid(itemId)) {
     return NextResponse.json({ message: 'Invalid item ID format' }, { status: 400 });
   }
