@@ -1,84 +1,68 @@
 // src/middleware.ts
-import { NextResponse } from 'next/server'; // Used for NextResponse.redirect and NextResponse.next
+'use server'; 
+import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { decrypt } from '@/lib/session'; // Your decrypt function
+import { decrypt, type SessionData } from '@/lib/session'; // Import decrypt and SessionData type
 
-// Define a more specific type for your session payload
-interface SessionPayload {
-  userId: string;
-  // Add any other properties you expect in your session, for example:
-  // username?: string;
-  // role?: 'admin' | 'user' | 'editor';
-  // expires?: Date; // Often included from JWT libraries
-}
+// Define routes that require authentication
+const PROTECTED_ROUTES = ['/dashboard']; // Add other protected base paths (e.g., '/profile', '/settings')
 
-const PROTECTED_ROUTES = ['/dashboard']; // Routes that require authentication
-const PUBLIC_ONLY_ROUTES = ['/login', '/register']; // Routes accessible only when not logged in
+// Define routes that should only be accessible to unauthenticated users
+const PUBLIC_ONLY_ROUTES = ['/login', '/register'];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl; // Get the current path
-  const sessionCookie = request.cookies.get('session')?.value;
+  const { pathname } = request.nextUrl;
+  const sessionCookieValue = request.cookies.get('session')?.value;
 
-  let sessionPayload: SessionPayload | null = null;
+  let session: SessionData | null = null;
 
-  if (sessionCookie) {
-    try {
-      const decryptedData = await decrypt(sessionCookie);
-      // Ensure decryptedData matches SessionPayload structure
-      if (decryptedData && typeof decryptedData === 'object' && 'userId' in decryptedData) {
-         sessionPayload = decryptedData as SessionPayload; // Type assertion
-      } else if (decryptedData) {
-        console.warn('Decrypted session data is not in the expected format:', decryptedData);
-        sessionPayload = null;
-      }
-    } catch (error) {
-      console.error('Failed to decrypt session cookie in middleware:', error);
-      sessionPayload = null; // Treat as no session if decryption fails
-
-      // If decryption fails and it's a protected route, redirect immediately.
-      // This handles cases where the cookie is present but invalid.
-      if (PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('redirect_to', pathname);
-        const response = NextResponse.redirect(loginUrl);
-        response.cookies.set('session', '', { maxAge: -1, path: '/' }); // Attempt to clear bad cookie
-        return response;
-      }
-    }
+  if (sessionCookieValue) {
+    // Decrypt the session cookie directly in middleware.
+    // Note: The `decrypt` function from lib/session uses `jose` which is Edge-compatible.
+    session = await decrypt(sessionCookieValue);
   }
 
-  const isAuthenticated = !!sessionPayload?.userId; // Determine if user is authenticated
+  const isAuthenticated = !!session?.userId;
 
-  // 1. If trying to access a protected route and not authenticated
-  if (!isAuthenticated && PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
+  // Scenario 1: User is trying to access a protected route
+  const isAccessingProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+
+  if (isAccessingProtectedRoute && !isAuthenticated) {
+    // User is not authenticated and trying to access a protected route, redirect to login
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect_to', pathname);
-    console.log(`Redirecting unauthenticated user from ${pathname} to ${loginUrl.toString()}`);
+    loginUrl.searchParams.set('redirect_to', pathname); // Pass original path for redirect after login
+    console.log(`[Middleware] Unauthenticated access to ${pathname}. Redirecting to login.`);
     const response = NextResponse.redirect(loginUrl);
-     // If there was a cookie but decryption failed, ensure it's cleared
-    if (sessionCookie && !sessionPayload) {
+    // If the cookie was present but invalid (decryption failed), clear it.
+    if (sessionCookieValue && !session) {
         response.cookies.set('session', '', { maxAge: -1, path: '/' });
     }
     return response;
   }
 
-  // 2. If authenticated and trying to access a public-only route (e.g., login, register)
+  // Scenario 2: User is authenticated and trying to access a public-only route
   if (isAuthenticated && PUBLIC_ONLY_ROUTES.includes(pathname)) {
-    console.log(`Redirecting authenticated user from ${pathname} to /dashboard`);
+    // User is authenticated, redirect them away from login/register to the dashboard
+    console.log(`[Middleware] Authenticated user accessing ${pathname}. Redirecting to dashboard.`);
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // 3. Allow request to proceed if none of the above conditions are met
+  // Scenario 3: No special action needed, allow the request to proceed
   return NextResponse.next();
 }
 
+// Configure the matcher to specify which paths the middleware should run on
 export const config = {
   matcher: [
-    // Match all request paths except for the ones starting with:
-    // - _next/static (static files)
-    // - _next/image (image optimization files)
-    // - favicon.ico (favicon file)
-    // - api/ (API routes)
-    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes, these often handle their own auth or are public)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     *
+     * This ensures middleware primarily runs on page navigations.
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
