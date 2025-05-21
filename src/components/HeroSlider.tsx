@@ -19,7 +19,7 @@ const allSlidesData = [ // Renamed to avoid confusion
     id: 2,
     type: "video",
     videoSrc: "/Norwood intro.mp4",
-    poster: "/garlic bite.jpg",
+    // poster: "/garlic bite.jpg",
     title: "THE BRAND",
     subtitle: "OF TEA AND BITE TASTE",
   },
@@ -75,7 +75,7 @@ const HeroSlider = () => {
               {slide.videoSrc && (
                 <video
                   src={slide.videoSrc}
-                  poster={slide.poster}
+                  // poster={slide.poster}
                   autoPlay
                   loop // The video element itself will loop
                   muted
