@@ -85,8 +85,7 @@ export async function createSessionCookie(userId: string, username: string) {
   const cookieExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
   const sessionToken = await encrypt({ userId, username });
 
-  // FIX: Await cookies() before calling .set()
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // Correctly awaiting cookies()
   cookieStore.set('session', sessionToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -102,8 +101,7 @@ export async function createSessionCookie(userId: string, username: string) {
  * Intended for use in Server Actions, Route Handlers, or RSCs.
  */
 export async function getSession(): Promise<SessionData | null> {
-  // FIX: Await cookies() before calling .get()
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // Correctly awaiting cookies()
   const sessionCookieValue = cookieStore.get('session')?.value;
 
   if (!sessionCookieValue) {
@@ -117,8 +115,7 @@ export async function getSession(): Promise<SessionData | null> {
  * Intended for use in Server Actions or Route Handlers.
  */
 export async function deleteSessionCookie() {
-  // FIX: Await cookies() before calling .set()
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // Correctly awaiting cookies()
   cookieStore.set('session', '', { // Set to empty with past expiration
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
