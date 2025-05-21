@@ -24,3 +24,4 @@ export interface User {
   // Add role or isAdmin if you store it on the user document
   isAdmin?: boolean;
 }
+

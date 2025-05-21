@@ -1,23 +1,49 @@
-// src/app/products/page.tsx
+// src/app/Products/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ModernProductCard from "@/components/ProductCard"; // Ensure path is correct (e.g., ProductCard or ModernProductCard)
-import { Item } from "@/lib/types";
+import { motion, AnimatePresence, RepeatType } from "framer-motion"; // Make sure RepeatType is imported
+import ModernProductCard from "@/components/ProductCard";
+import { Item } from "@/lib/types"; // Ensure Item type is imported
 import { Loader2, ServerCrash, Package, Sparkles, ShieldCheck, Leaf } from "lucide-react";
 
+// Define a type for the star properties
+interface StarProps {
+  key: string;
+  style: {
+    width: number;
+    height: number;
+    left: string;
+    top: string;
+  };
+  animate: {
+    x: number;
+    y: number;
+    opacity: number[];
+    scale: number[];
+  };
+  transition: {
+    duration: number;
+    repeat: number;
+    repeatType: RepeatType; // Use Framer Motion's RepeatType
+    delay: number;
+  };
+}
+
 const ProductsPage = () => {
+  // --- STATE VARIABLE DEFINITIONS - THESE MUST BE HERE ---
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stars, setStars] = useState<StarProps[]>([]);
+  // --- END OF STATE VARIABLE DEFINITIONS ---
 
   useEffect(() => {
     const fetchItems = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/items");
+        const res = await fetch("/api/items"); // <--- USE THE NEW PUBLIC ENDPOINT
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || `Failed to fetch products: ${res.status}`);
@@ -40,7 +66,32 @@ const ProductsPage = () => {
       }
     };
     fetchItems();
-  }, []);
+
+    // Generate star properties only on the client side after mount
+    const generatedStars: StarProps[] = [...Array(30)].map((_, i) => ({
+      key: `star-${i}`,
+      style: {
+        width: Math.random() * 2 + 1,
+        height: Math.random() * 2 + 1,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+      },
+      animate: {
+        x: (Math.random() - 0.5) * 50,
+        y: (Math.random() - 0.5) * 50,
+        opacity: [0, 1, 0.5, 0],
+        scale: [1, 1.2, 1],
+      },
+      transition: {
+        duration: Math.random() * 10 + 10,
+        repeat: Infinity,
+        repeatType: "mirror", // This should be fine now with RepeatType in StarProps
+        delay: Math.random() * 5,
+      },
+    }));
+    setStars(generatedStars);
+
+  }, []); // Empty dependency array: runs once on mount (client-side)
 
   const pageContainerVariants = {
     initial: { opacity: 0 },
@@ -51,17 +102,12 @@ const ProductsPage = () => {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "circOut" } },
   };
-  
+
   const features = [
     { icon: Sparkles, text: "Exquisite Taste", delay: 0.8 },
     { icon: ShieldCheck, text: "Premium Quality", delay: 0.95 },
     { icon: Leaf, text: "Authentic Ingredients", delay: 1.1 },
   ];
-
-  // Ensure this import path is correct. If your component is named ModernProductCard.tsx,
-  // the import should be: import ModernProductCard from "@/components/ModernProductCard";
-  // The provided code had: import ModernProductCard from "@/components/ProductCard";
-  // I'm assuming it should be ModernProductCard based on previous contexts.
 
   return (
     <motion.section
@@ -87,43 +133,27 @@ const ProductsPage = () => {
             repeatType: "mirror"
           }}
         />
-        {[...Array(30)].map((_, i) => (
+        {stars.map((star) => (
           <motion.div
-            key={`star-${i}`}
+            key={star.key}
             className="absolute rounded-full bg-gold-500/30"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: (Math.random() - 0.5) * 50,
-              y: (Math.random() - 0.5) * 50,
-              opacity: [0, 1, 0.5, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "mirror",
-              delay: Math.random() * 5,
-            }}
+            style={star.style}
+            animate={star.animate}
+            transition={star.transition}
           />
         ))}
       </div>
 
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-        {/* Hero Section */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        {/* Hero Section - Line 127 approx. where "Norwood" might be */}
         <div className="text-center mb-20 md:mb-28">
           <motion.h1
             variants={heroTextVariants}
             transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 80 }}
             className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 leading-tight"
           >
-            {/* MODIFIED LINE BELOW: Removed filter drop-shadow */}
             <span className="bg-clip-text text-transparent bg-gradient-to-r bg-white from-gold-300 via-amber-400 to-gold-500">
-              Norwood&apos;s Finest Collection
+              Norwood&apos;s Finest Collection {/* cSpell should be handled by cspell.json */}
             </span>
           </motion.h1>
           <motion.p
@@ -133,7 +163,7 @@ const ProductsPage = () => {
           >
             Experience unparalleled quality and taste. Each creation is a masterpiece, crafted with passion.
           </motion.p>
-          <motion.div 
+          <motion.div
             className="flex flex-wrap justify-center gap-x-6 gap-y-4 md:gap-x-10 mb-12"
           >
             {features.map((feature) => (
@@ -151,8 +181,8 @@ const ProductsPage = () => {
           </motion.div>
         </div>
 
-         <motion.div 
-            variants={heroTextVariants} 
+         <motion.div
+            variants={heroTextVariants}
             transition={{duration: 0.6, delay: 1.3}}
             className="mb-12 text-center md:text-left"
         >
@@ -161,6 +191,7 @@ const ProductsPage = () => {
         </motion.div>
 
         <AnimatePresence mode="wait">
+          {/* Line 165 approx. for isLoading */}
           {isLoading ? (
             <motion.div
               key="loader"
@@ -171,6 +202,7 @@ const ProductsPage = () => {
               <p className="text-2xl tracking-wider font-medium">Crafting Your View...</p>
               <p className="text-sm text-slate-500">Fetching the finest items.</p>
             </motion.div>
+          // Line 175 approx. for error
           ) : error ? (
             <motion.div
               key="error"
@@ -179,30 +211,34 @@ const ProductsPage = () => {
             >
               <ServerCrash size={60} className="mx-auto text-red-300 mb-5" />
               <h2 className="text-2xl font-semibold text-red-200 mb-3">Something Spilled!</h2>
+              {/* Line 183 approx. for error */}
               <p className="text-red-300/90 mb-8">{error}</p>
-              <button 
+              <button
                 onClick={() => window.location.reload()}
                 className="bg-gold-500 hover:bg-gold-600 active:bg-gold-700 text-slate-900 font-bold py-3 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-gold-500/30 focus:outline-none focus:ring-2 focus:ring-gold-300 focus:ring-offset-2 focus:ring-offset-slate-950"
               >
                 Clean Up & Retry
               </button>
             </motion.div>
+          // Line 191 approx. for items.length
           ) : items.length === 0 ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
               className="text-center py-20 text-slate-400"
             >
-              <Package size={80} className="mx-auto text-gold-500/50 mb-8" /> 
+              <Package size={80} className="mx-auto text-gold-500/50 mb-8" />
               <h2 className="text-3xl font-semibold mb-4 text-slate-200">Our Shelves Are Being Stocked!</h2>
               <p className="text-lg text-slate-500">Fresh, exclusive products are coming soon. Stay tuned!</p>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="itemsGrid"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-12"
               variants={{ animate: { transition: { staggerChildren: 0.1 } } }}
             >
+              {/* Line 207 approx. for items.map */}
+              {/* Types for item and index will be inferred from items: Item[] */}
               {items.map((item, index) => (
                 <ModernProductCard key={item._id} item={item} index={index} />
               ))}
