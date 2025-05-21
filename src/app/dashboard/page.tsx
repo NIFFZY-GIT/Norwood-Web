@@ -1,4 +1,4 @@
-
+'use server'; // This line is not needed here since this is a server component
 // src/app/dashboard/page.tsx
 import { getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
