@@ -14,3 +14,13 @@ export interface UserSession {
   username: string;
   // any other session fields
 }
+
+export interface User {
+  _id: string; // from MongoDB
+  username: string;
+  email?: string; // Assuming email is stored
+  createdAt: Date;
+  // Do NOT store passwords directly here for listing.
+  // Add role or isAdmin if you store it on the user document
+  isAdmin?: boolean;
+}
