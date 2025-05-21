@@ -1,49 +1,84 @@
 // src/middleware.ts
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'; // Used for NextResponse.redirect and NextResponse.next
 import type { NextRequest } from 'next/server';
-import { decrypt } from '@/lib/session'; // Import your decrypt function
+import { decrypt } from '@/lib/session'; // Your decrypt function
 
-const PROTECTED_ROUTES = ['/dashboard'];
-const PUBLIC_ROUTES = ['/login', '/register']; // Routes accessible without login
+// Define a more specific type for your session payload
+interface SessionPayload {
+  userId: string;
+  // Add any other properties you expect in your session, for example:
+  // username?: string;
+  // role?: 'admin' | 'user' | 'editor';
+  // expires?: Date; // Often included from JWT libraries
+}
+
+const PROTECTED_ROUTES = ['/dashboard']; // Routes that require authentication
+const PUBLIC_ONLY_ROUTES = ['/login', '/register']; // Routes accessible only when not logged in
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl; // Get the current path
   const sessionCookie = request.cookies.get('session')?.value;
 
-  // Try to get session data
-  const session = await decrypt(sessionCookie);
+  let sessionPayload: SessionPayload | null = null;
 
-  // If trying to access a protected route without a valid session, redirect to login
-  if (PROTECTED_ROUTES.some(route => pathname.startsWith(route)) && !session?.userId) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('redirect_to', pathname); // Optional: redirect back after login
-    return NextResponse.redirect(loginUrl);
+  if (sessionCookie) {
+    try {
+      const decryptedData = await decrypt(sessionCookie);
+      // Ensure decryptedData matches SessionPayload structure
+      if (decryptedData && typeof decryptedData === 'object' && 'userId' in decryptedData) {
+         sessionPayload = decryptedData as SessionPayload; // Type assertion
+      } else if (decryptedData) {
+        console.warn('Decrypted session data is not in the expected format:', decryptedData);
+        sessionPayload = null;
+      }
+    } catch (error) {
+      console.error('Failed to decrypt session cookie in middleware:', error);
+      sessionPayload = null; // Treat as no session if decryption fails
+
+      // If decryption fails and it's a protected route, redirect immediately.
+      // This handles cases where the cookie is present but invalid.
+      if (PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('redirect_to', pathname);
+        const response = NextResponse.redirect(loginUrl);
+        response.cookies.set('session', '', { maxAge: -1, path: '/' }); // Attempt to clear bad cookie
+        return response;
+      }
+    }
   }
 
-  // If user is logged in (has a valid session) and tries to access a public-only route (like login/register),
-  // redirect them to the dashboard.
-  if (session?.userId && PUBLIC_ROUTES.includes(pathname)) {
+  const isAuthenticated = !!sessionPayload?.userId; // Determine if user is authenticated
+
+  // 1. If trying to access a protected route and not authenticated
+  if (!isAuthenticated && PROTECTED_ROUTES.some(route => pathname.startsWith(route))) {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('redirect_to', pathname);
+    console.log(`Redirecting unauthenticated user from ${pathname} to ${loginUrl.toString()}`);
+    const response = NextResponse.redirect(loginUrl);
+     // If there was a cookie but decryption failed, ensure it's cleared
+    if (sessionCookie && !sessionPayload) {
+        response.cookies.set('session', '', { maxAge: -1, path: '/' });
+    }
+    return response;
+  }
+
+  // 2. If authenticated and trying to access a public-only route (e.g., login, register)
+  if (isAuthenticated && PUBLIC_ONLY_ROUTES.includes(pathname)) {
+    console.log(`Redirecting authenticated user from ${pathname} to /dashboard`);
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  return NextResponse.next(); // Allow request to proceed
+  // 3. Allow request to proceed if none of the above conditions are met
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - api/ (API routes, though login/logout might be handled specifically or excluded if needed)
-     *
-     * This ensures middleware runs on page navigations.
-     * If you want finer control over API routes, adjust the matcher.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|api/auth).*)',
-    // Added 'api/auth' exclusion if you have auth-specific public APIs like /api/auth/session
-    // If /api/login is public, it should not be blocked by middleware trying to redirect
-    // The current logic handles /api/login fine as it's not in PROTECTED_ROUTES.
+    // Match all request paths except for the ones starting with:
+    // - _next/static (static files)
+    // - _next/image (image optimization files)
+    // - favicon.ico (favicon file)
+    // - api/ (API routes)
+    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
   ],
 };
