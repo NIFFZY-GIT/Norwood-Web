@@ -26,21 +26,23 @@ const ContactUs = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/send", {
+      // Updated fetch URL to your Next.js API route
+      const response = await fetch("/api/send-contact-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const result = await response.json();
-      if (result.success) {
+
+      if (response.ok && result.success) { // Check response.ok as well
         toast.success("🎉 Message Sent Successfully!", { duration: 3000 });
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
-        toast.error("❌ Failed to send message, please try again.");
+        toast.error(result.error || "❌ Failed to send message, please try again.");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error submitting contact form:", error);
       toast.error("⚠️ An error occurred. Please try again later.");
     }
 
