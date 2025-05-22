@@ -9,6 +9,8 @@ import { ObjectId } from 'mongodb';
 interface ItemFromDB extends Omit<Item, '_id' | 'createdAt'> {
   _id: ObjectId;
   createdAt: Date;
+  // Assuming userId is part of ItemFromDB from your PUT logic
+  userId: string;
 }
 
 // PUT: Update an item
@@ -60,7 +62,7 @@ export async function PUT(
 
     // updatedDoc will be the document itself (or null)
     const updatedDoc = await itemsCollection.findOneAndUpdate(
-      { _id: new ObjectId(itemId), userId: session.userId },
+      { _id: new ObjectId(itemId), userId: session.userId }, // Owner check remains for PUT
       { $set: updateFields },
       {
         returnDocument: 'after',   // ensure we get the post-update doc
@@ -69,7 +71,7 @@ export async function PUT(
 
     if (!updatedDoc) {
       return NextResponse.json(
-        { message: 'Item not found or not authorized' },
+        { message: 'Item not found or not authorized for update' }, // Clarified message for PUT
         { status: 404 }
       );
     }
@@ -119,6 +121,7 @@ export async function DELETE(
   const { itemId } = await params;
   const session = await getSession();
   if (!session?.userId) {
+    // User must be authenticated to attempt a delete operation
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -132,16 +135,19 @@ export async function DELETE(
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB_NAME);
-    const itemsCollection = db.collection('items');
+    // Use the ItemFromDB type for consistency, though not strictly necessary for deleteOne's input filter
+    const itemsCollection = db.collection<ItemFromDB>('items');
 
     const result = await itemsCollection.deleteOne({
       _id: new ObjectId(itemId),
-      userId: session.userId,
+      // The condition `userId: session.userId` is removed here.
+      // Now, any authenticated user can delete any item by its ID.
     });
 
     if (result.deletedCount === 0) {
+      // If no item was deleted, it means an item with that ID was not found.
       return NextResponse.json(
-        { message: 'Item not found or not authorized' },
+        { message: 'Item not found' },
         { status: 404 }
       );
     }
