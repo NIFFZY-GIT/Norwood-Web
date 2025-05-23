@@ -108,14 +108,14 @@ function LoginFormContent() {
           required
           disabled={isLoading}
         />
-        <div className="text-right mt-2">
+        {/* <div className="text-right mt-2">
           <a
             href="#" // Consider making this a real link or button
             className="text-sm text-sky-500 hover:underline dark:text-sky-400"
           >
             Forgot Password?
           </a>
-        </div>
+        </div> */}
       </div>
 
       <button
@@ -135,7 +135,7 @@ function LoginFormContent() {
         )}
       </button>
 
-      <p className="text-sm text-center text-slate-600 dark:text-slate-400">
+      {/* <p className="text-sm text-center text-slate-600 dark:text-slate-400">
         Don&apos;t have an account?{' '}
         <a
           href="/register" // Use Next.js Link component for internal navigation if preferred
@@ -143,7 +143,7 @@ function LoginFormContent() {
         >
           Sign up
         </a>
-      </p>
+      </p> */}
     </form>
   );
 }
