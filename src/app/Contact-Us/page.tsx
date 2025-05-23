@@ -1,218 +1,269 @@
-"use client";
+// src/components/dashboard/AddItemModal.tsx
+'use client';
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import toast, { Toaster } from "react-hot-toast";
+import { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { X, ImagePlus, Loader2, ScanLine } from 'lucide-react';
+import { Item } from '@/lib/types';
+import NextImage from 'next/image';
 
-const ContactUs = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
+interface AddItemModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onItemSaved: (savedItem: Item, isEditing: boolean) => void; // Renamed from onItemAdded
+  editingItem?: Item | null; // Item to edit, if any
+}
+
+interface ItemPayload {
+  name: string;
+  description: string;
+  itemCode: string;
+  imageBase64?: string; // Optional for PUT if image not changed
+}
+
+const fileToDataUrl = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
   });
-
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Updated fetch URL to your Next.js API route
-      const response = await fetch("/api/send-contact-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) { // Check response.ok as well
-        toast.success("🎉 Message Sent Successfully!", { duration: 3000 });
-        setFormData({ name: "", email: "", subject: "", message: "" });
-      } else {
-        toast.error(result.error || "❌ Failed to send message, please try again.");
-      }
-    } catch (error) {
-      console.error("Error submitting contact form:", error);
-      toast.error("⚠️ An error occurred. Please try again later.");
-    }
-
-    setLoading(false);
-  };
-
-  return (
-    <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="py-20 bg-gradient-to-b from-black via-gray-900 to-black text-white"
-    >
-      <Toaster position="top-right" reverseOrder={false} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-center mb-16"
-        >
-          Let&apos;s Connect
-        </motion.h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Left Side - Contact Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl p-8"
-          >
-            <h3 className="text-2xl sm:text-3xl font-semibold mb-6 text-green-600">
-              Get in Touch
-            </h3>
-            <p className="text-gray-700 mb-8">
-              Reach out for any inquiries or support. We&apos;re happy to hear from you!
-            </p>
-
-            <div className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <FaPhone className="text-green-500 text-2xl animate-pulse" />
-                <a
-                  href="tel:+94716195982"
-                  className="text-gray-700 hover:text-green-600 text-lg transition"
-                >
-                  +94 716 195 982
-                </a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <FaEnvelope className="text-green-500 text-2xl animate-pulse" />
-                <a
-                  href="mailto:norwoodlankateasinternational@gmail.com"
-                  className="text-gray-700 hover:text-green-600 text-lg transition break-words truncate max-w-full"
-                >
-                  norwoodlankateasinternational@gmail.com
-                </a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <FaMapMarkerAlt className="text-green-500 text-2xl animate-bounce" />
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Norwood+Empire(PVT)Ltd+Sri+Lanka"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-700 hover:text-green-600 text-lg transition"
-                >
-                  Norwood Empire (PVT) Ltd, Sri Lanka
-                </a>
-              </div>
-            </div>
-
-            {/* Google Map Embed */}
-            <div className="mt-8 rounded-2xl overflow-hidden shadow-2xl border border-green-200 hover:scale-105 transform transition-all duration-500">
-              <div className="w-full h-64 sm:h-60 md:h-45">
-                <iframe
-                  title="Google Map"
-                  className="w-full h-full"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.159262690624!2d79.97885107568112!3d6.87151231901993!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2511ff4c2142b%3A0xc20797ac18fb760f!2sNorwood%20Empire%20(PVT)%20Ltd!5e0!3m2!1sen!2slk!4v1740077158463!5m2!1sen!2slk"
-                  allowFullScreen
-                  loading="lazy"
-                ></iframe>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right Side - Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="bg-white/80 backdrop-blur-md shadow-2xl rounded-2xl p-8"
-          >
-            <h3 className="text-2xl sm:text-3xl font-semibold mb-6 text-green-600">
-              Send Us a Message
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full p-4 border text-black border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
-              />
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full p-4 border text-black border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
-              />
-
-              <input
-                type="text"
-                name="subject"
-                placeholder="Subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-                className="w-full p-4 border text-black border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition"
-              />
-
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                className="w-full p-4 border text-black border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition h-32"
-              />
-
-              <button
-                type="submit"
-                className="w-full flex justify-center items-center gap-2 bg-green-600 text-white py-4 rounded-xl hover:bg-green-700 text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-                      ></path>
-                    </svg>
-                    Sending...
-                  </>
-                ) : (
-                  "Send Message"
-                )}
-              </button>
-            </form>
-          </motion.div>
-        </div>
-      </div>
-    </motion.section>
-  );
 };
 
-export default ContactUs;
+export default function AddItemModal({ 
+  isOpen, 
+  onClose, 
+  onItemSaved, 
+  editingItem 
+}: AddItemModalProps) {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [itemCode, setItemCode] = useState('');
+  const [imageBase64, setImageBase64] = useState<string | undefined>(undefined);
+  const [imagePreview, setImagePreview] = useState<string | undefined>(undefined);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isEditing = !!editingItem;
+
+  useEffect(() => {
+    if (isOpen) {
+        if (isEditing && editingItem) {
+            setName(editingItem.name);
+            setDescription(editingItem.description);
+            setItemCode(editingItem.itemCode);
+            setImageBase64(editingItem.imageBase64); 
+            setImagePreview(editingItem.imageBase64);
+        } else {
+            resetFormFields();
+        }
+        const fileInput = document.getElementById('itemImageFile') as HTMLInputElement | null;
+        if (fileInput) fileInput.value = '';
+    }
+  }, [isOpen, editingItem, isEditing]);
+
+  const resetFormFields = () => {
+    setName('');
+    setDescription('');
+    setItemCode('');
+    setImageBase64(undefined);
+    setImagePreview(undefined);
+    setError('');
+    const fileInput = document.getElementById('itemImageFile') as HTMLInputElement | null;
+    if (fileInput) fileInput.value = '';
+  };
+  
+  const handleModalClose = () => {
+    onClose(); 
+  }
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    
+    if (!file) {
+      const originalImage = isEditing && editingItem ? editingItem.imageBase64 : undefined;
+      setImageBase64(originalImage); 
+      setImagePreview(originalImage); 
+      e.target.value = ''; 
+      return;
+    }
+
+    // REMOVED: Client-side file size check
+    // if (file.size > 2 * 1024 * 1024) { // 2MB limit
+    //     setError('Image is too large (max 2MB).');
+    //     e.target.value = ''; 
+    //     const originalImage = isEditing && editingItem ? editingItem.imageBase64 : undefined;
+    //     setImageBase64(originalImage);
+    //     setImagePreview(originalImage);
+    //     return;
+    // }
+    setError(''); 
+
+    try {
+        const dataUrl = await fileToDataUrl(file);
+        setImageBase64(dataUrl); 
+        setImagePreview(dataUrl); 
+    } catch (err) {
+        console.error("Error converting file to Base64:", err);
+        setError('Failed to process image. Please try again.');
+        const originalImage = isEditing && editingItem ? editingItem.imageBase64 : undefined;
+        setImageBase64(originalImage);
+        setImagePreview(originalImage);
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    if (!name || !description || !itemCode ) {
+      setError('Name, description, and item code are required.');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!imageBase64) {
+        setError('An image is required.');
+        setIsLoading(false);
+        return;
+    }
+
+
+    const payload: ItemPayload = {
+      name,
+      description,
+      itemCode,
+    };
+
+    if (isEditing) {
+        if (imageBase64 !== editingItem?.imageBase64 || !editingItem?.imageBase64) { 
+            payload.imageBase64 = imageBase64;
+        } else if (imageBase64 && editingItem?.imageBase64 && imageBase64 === editingItem.imageBase64) {
+            // Image is the same, don't send it in payload
+        } else {
+             payload.imageBase64 = imageBase64; 
+        }
+    } else { 
+        payload.imageBase64 = imageBase64; 
+    }
+
+
+    const endpoint = isEditing ? `/api/items/${editingItem!._id}` : '/api/items'; 
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(endpoint, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        const savedItemData: Item = await res.json();
+        if (typeof savedItemData.createdAt === 'string') {
+            savedItemData.createdAt = new Date(savedItemData.createdAt);
+        }
+        onItemSaved(savedItemData, isEditing);
+        handleModalClose(); 
+      } else {
+        const errorData = await res.json();
+        setError(errorData.message || `Failed to ${isEditing ? 'update' : 'add'} item.`);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  const currentImageSrc = imagePreview || (isEditing && editingItem?.imageBase64);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <button
+          onClick={handleModalClose}
+          className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+          aria-label="Close modal"
+        >
+          <X size={24} />
+        </button>
+        <h2 className="text-2xl font-semibold text-slate-800 dark:text-white mb-6">
+          {isEditing ? 'Edit Item' : 'Add New Item'}
+        </h2>
+        
+        {error && <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-300" role="alert">{error}</div>}
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="itemName" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Item Name</label>
+            <input id="itemName" type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., Cool Gadget" required />
+          </div>
+
+          <div>
+            <label htmlFor="itemCode" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Item Code</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><ScanLine className="w-5 h-5 text-slate-400" /></div>
+              <input id="itemCode" type="text" value={itemCode} onChange={(e) => setItemCode(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., SKU12345" required />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="itemDescription" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
+            <textarea id="itemDescription" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" placeholder="Describe your item..." required />
+          </div>
+          
+          <div>
+            <label htmlFor="itemImageFile" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Item Image
+              {isEditing && imageBase64 && imageBase64 === editingItem?.imageBase64 && ' (Current image selected)'}
+              {isEditing && imageBase64 && imageBase64 !== editingItem?.imageBase64 && ' (New image selected)'}
+            </label>
+            <div className="flex items-center space-x-3">
+                <ImagePlus className="w-6 h-6 text-slate-400 flex-shrink-0" />
+                <input
+                    id="itemImageFile"
+                    type="file"
+                    accept="image/png, image/jpeg, image/gif, image/webp"
+                    onChange={handleFileChange}
+                    className="block w-full text-sm text-slate-500 dark:text-slate-400
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-sky-50 dark:file:bg-slate-700 file:text-sky-700 dark:file:text-sky-300
+                                hover:file:bg-sky-100 dark:hover:file:bg-slate-600 cursor-pointer"
+                />
+            </div>
+            {/* REMOVED: Max 2MB text */}
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">PNG, JPG, GIF, WEBP. Backend limits may apply.</p>
+          </div>
+
+          {currentImageSrc && (
+            <div className="mt-4">
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                {isEditing && imageBase64 === editingItem?.imageBase64 ? 'Current Image Preview:' : 'Image Preview:'}
+              </p>
+              <div className="relative w-full h-48 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden flex items-center justify-center">
+                <NextImage src={currentImageSrc} alt="Image preview" layout="fill" objectFit="contain" className="bg-slate-100 dark:bg-slate-700" unoptimized />
+              </div>
+            </div>
+          )}
+
+          <button type="submit" disabled={isLoading} className="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-150 flex items-center justify-center disabled:opacity-70 mt-6">
+            {isLoading && <Loader2 className="animate-spin mr-2" size={20} />}
+            {isLoading ? (isEditing ? 'Updating...' : 'Adding...') : (isEditing ? 'Save Changes' : 'Add Item')}
+          </button>
+        </form>
+        <div className="mt-6 p-3 bg-amber-50 dark:bg-amber-900 border border-amber-200 dark:border-amber-700 rounded-md text-center">
+            <p className="text-xs text-amber-700 dark:text-amber-300">
+                <strong>Important Note:</strong> Storing images as Base64 directly in the database is only for demonstration.
+                For production, use a dedicated file storage service and store image URLs. Large images may fail to save due to database limits.
+            </p>
+        </div>
+      </div>
+    </div>
+  );
+}
