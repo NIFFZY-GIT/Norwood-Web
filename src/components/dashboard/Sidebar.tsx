@@ -1,6 +1,7 @@
+// components/dashboard/Sidebar.tsx
 'use client';
 import Link from 'next/link';
-import { LayoutDashboard, Package, BarChart3, LogOut, Settings, X as XIcon } from 'lucide-react'; // Renamed X to XIcon
+import { LayoutDashboard, Package, BarChart3, LogOut, Settings, X as XIcon } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 const navItems = [
@@ -30,7 +31,10 @@ export default function Sidebar({ username, isMobileOpen, onMobileClose }: Sideb
     }
   };
 
-  const baseClasses = "bg-slate-800 text-slate-100 p-4 sm:p-6 flex flex-col min-h-screen fixed top-0 left-0 z-40 w-64 transition-transform duration-300 ease-in-out";
+  const baseClasses = `bg-slate-800 text-slate-100 p-4 sm:p-6 flex flex-col 
+                       fixed left-0 z-40 w-64 transition-transform duration-300 ease-in-out
+                       top-20 h-[calc(100vh-theme(space.20))]`; // Correctly uses top-20 and calculates height
+
   const desktopClasses = "md:translate-x-0";
   const mobileClasses = isMobileOpen ? "translate-x-0" : "-translate-x-full";
 
@@ -43,14 +47,14 @@ export default function Sidebar({ username, isMobileOpen, onMobileClose }: Sideb
           aria-hidden="true"
         />
       )}
-      <aside className={`${baseClasses} ${desktopClasses} ${mobileClasses}`}>
+      <aside id="sidebar-menu" className={`${baseClasses} ${desktopClasses} ${mobileClasses}`}>
         <div className="flex justify-between items-center mb-6 sm:mb-8">
           <Link href="/dashboard" className="text-xl sm:text-2xl font-bold text-sky-400 hover:text-sky-300 transition-colors">
             MyDashboard
           </Link>
           <button
             onClick={onMobileClose}
-            className="md:hidden text-slate-300 hover:text-white p-1 -mr-1" // Added padding for easier tap
+            className="md:hidden text-slate-300 hover:text-white p-1 -mr-1"
             aria-label="Close sidebar"
           >
             <XIcon size={24} />
@@ -58,13 +62,13 @@ export default function Sidebar({ username, isMobileOpen, onMobileClose }: Sideb
         </div>
         {username && <p className="text-sm text-slate-400 -mt-4 mb-4">Welcome, {username}</p>}
         
-        <nav className="flex-grow">
+        <nav className="flex-grow overflow-y-auto">
           <ul>
             {navItems.map((item) => (
               <li key={item.label} className="mb-2">
                 <Link
                   href={item.href}
-                  onClick={onMobileClose} // Close sidebar on mobile navigation
+                  onClick={() => { if (isMobileOpen) onMobileClose(); }}
                   className={`flex items-center space-x-3 p-2 rounded-md hover:bg-slate-700 transition-colors ${
                     pathname === item.href ? 'bg-sky-500 text-white font-semibold' : 'text-slate-300 hover:text-white'
                   }`}
@@ -79,7 +83,7 @@ export default function Sidebar({ username, isMobileOpen, onMobileClose }: Sideb
         <div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center space-x-3 p-3 rounded-md text-slate-300 hover:bg-red-600 hover:text-white transition-colors"
+            className="w-full flex items-center space-x-3 p-3 mt-4 rounded-md text-slate-300 hover:bg-red-600 hover:text-white transition-colors"
           >
             <LogOut className="w-5 h-5" />
             <span>Logout</span>
