@@ -82,7 +82,7 @@ const OurStorySection = () => {
               What began as a personal obsession—toasting, spicing, and tasting until we found the perfect recipe—quickly became something we had to share. We believe that great snacks are an experience, a moment of pure, unadulterated joy.
             </p>
             <p className="text-lg text-slate-300 leading-relaxed">
-              We hunt down the boldest spices and finest all-natural ingredients. Every batch is crafted with the same passion and attention to detail as our very first. This isn't just business; it's our craft.
+              We hunt down the boldest spices and finest all-natural ingredients. Every batch is crafted with the same passion and attention to detail as our very first. This isn&apos;t just business; it&apos;s our craft.
             </p>
 
             <Link href="/products" passHref>
