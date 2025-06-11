@@ -1,29 +1,11 @@
-// src/app/dashboard/items/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { Item, UserSession } from '@/lib/types';
+// No need to import DashboardLayout or useRouter here anymore.
+import { Item } from '@/lib/types';
 import ItemCard from '@/components/dashboard/ItemCard';
 import AddItemModal from '@/components/dashboard/AddItemModal';
 import { PlusCircle, Loader2, Package as PackageIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-
-async function getClientSession(): Promise<UserSession | null> {
-  try {
-    const res = await fetch('/api/auth/session');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && typeof data.userId === 'string' && typeof data.username === 'string') {
-        return data as UserSession;
-      }
-    }
-    return null;
-  } catch (error) {
-    console.error('Failed to fetch client session:', error);
-    return null;
-  }
-}
 
 export default function ItemsPage() {
   const [items, setItems] = useState<Item[]>([]);
@@ -31,48 +13,35 @@ export default function ItemsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
-  const [currentSession, setCurrentSession] = useState<UserSession | null | undefined>(undefined);
-  const router = useRouter();
 
+  // This useEffect now ONLY focuses on fetching item data.
+  // Session checks are handled by the parent layout.tsx.
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchItems = async () => {
       setIsLoading(true);
       setError(null);
-
-      // Load session
-      const sessionData = await getClientSession();
-      setCurrentSession(sessionData);
-      // Optionally redirect if no session:
-      // if (!sessionData) return router.push('/login');
-
-      // Load items
       try {
         const res = await fetch('/api/items');
         if (!res.ok) {
-          const errorData = (await res.json()) as { message?: string };
-          throw new Error(errorData.message || `Failed to fetch items: ${res.status}`);
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Failed to fetch items');
         }
-        const data = (await res.json()) as Item[];
+        const data: Item[] = await res.json();
         setItems(
           data.map(item => ({
             ...item,
             createdAt: new Date(item.createdAt),
           }))
         );
-      } catch (err: unknown) {
-        console.error('Fetch items error:', err);
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Unknown error while fetching items');
-        }
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchInitialData();
-  }, [router]);
+    fetchItems();
+  }, []);
 
   const handleOpenModal = () => {
     setEditingItem(null);
@@ -86,50 +55,32 @@ export default function ItemsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this item?')) return;
-    setError(null);
-    setIsLoading(true);
     try {
       const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const errorData = (await res.json()) as { message?: string };
-        throw new Error(errorData.message || `Delete failed: ${res.status}`);
-      }
+      if (!res.ok) throw new Error('Failed to delete');
       setItems(prev => prev.filter(i => i._id !== id));
-    } catch (err: unknown) {
-      console.error('Delete item error:', err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Unknown error while deleting item');
-      }
-    } finally {
-      setIsLoading(false);
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
-  const handleSaved = (saved: Item, isEdit: boolean) => {
-    const itemWithDate = { ...saved, createdAt: new Date(saved.createdAt) };
-    setItems(prev =>
-      isEdit
-        ? prev.map(i => (i._id === itemWithDate._id ? itemWithDate : i))
-        : [itemWithDate, ...prev]
-    );
+  const handleSaved = (savedItem: Item, isEdit: boolean) => {
+    const itemWithDate = { ...savedItem, createdAt: new Date(savedItem.createdAt) };
+    if (isEdit) {
+      setItems(prev => prev.map(i => (i._id === itemWithDate._id ? itemWithDate : i)));
+    } else {
+      setItems(prev => [itemWithDate, ...prev]);
+    }
     setIsModalOpen(false);
     setEditingItem(null);
   };
 
-  // Wait for session check
-  if (currentSession === undefined) {
-    return (
-      <div className="flex min-h-screen bg-slate-100 dark:bg-slate-900 items-center justify-center">
-        <Loader2 className="animate-spin text-sky-500" size={48} />
-        <p className="ml-3 text-slate-600 dark:text-slate-400">Loading...</p>
-      </div>
-    );
-  }
+  // The session loading state is no longer needed here.
+  // The layout.tsx prevents this page from ever rendering if there's no session.
 
+  // Notice: No <DashboardLayout> wrapper! The page returns its content directly.
   return (
-    <DashboardLayout session={currentSession}>
+    <>
       <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
         <div className="flex items-center">
           <PackageIcon className="w-7 h-7 text-sky-500 mr-2" />
@@ -149,43 +100,39 @@ export default function ItemsPage() {
       {isLoading && (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-sky-500" size={48} />
-          <p className="ml-3 text-slate-600 dark:text-slate-400">Loading items...</p>
         </div>
       )}
 
-      {!isLoading && error && (
-        <div
-          className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 dark:bg-red-900/30 dark:text-red-300 dark:border-red-600 rounded-md mb-6"
-          role="alert"
-        >
-          <p className="font-bold">Error</p>
-          <p className="text-sm">{error}</p>
+      {error && (
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
+          <p className="font-bold">Error:</p>
+          <p>{error}</p>
         </div>
       )}
 
-      {!isLoading && !error && items.length === 0 && (
-        <div className="text-center py-10">
-          <PackageIcon size={64} className="mx-auto text-slate-400 dark:text-slate-500 mb-4" />
-          <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
-            No items yet!
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400">
-            Click “Add New Item” to get started.
-          </p>
-        </div>
-      )}
-
-      {!isLoading && !error && items.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {items.map(item => (
-            <ItemCard
-              key={item._id}
-              item={item}
-              onEdit={() => handleEdit(item)}
-              onDelete={() => handleDelete(item._id)}
-            />
-          ))}
-        </div>
+      {!isLoading && !error && (
+        <>
+          {items.length === 0 ? (
+            <div className="text-center py-10">
+              <PackageIcon size={64} className="mx-auto text-slate-400 mb-4" />
+              <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300">
+                No items yet!
+              </h2>
+              <p className="text-slate-500">Click “Add New Item” to get started.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {items.map(item => (
+                <ItemCard
+                  key={item._id}
+                  item={item}
+                  onEdit={() => handleEdit(item)}
+                  onDelete={() => handleDelete(item._id)}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       <AddItemModal
@@ -194,6 +141,6 @@ export default function ItemsPage() {
         onItemSaved={handleSaved}
         editingItem={editingItem}
       />
-    </DashboardLayout>
+    </>
   );
 }

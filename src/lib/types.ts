@@ -26,3 +26,32 @@ export interface User {
   isAdmin?: boolean;
 }
 
+// This is the structure we'll send to the frontend.
+// Keep your existing types (Item, UserSession, User)
+
+// Add these new types for the careers feature
+
+export interface Vacancy {
+  _id: string;
+  title: string;
+  department: string;
+  location: string;
+  description: string;
+  type: 'Full-time' | 'Part-time' | 'Contract' | 'Internship';
+  isActive: boolean; // To show/hide on the careers page
+  createdAt: Date;
+}
+
+export interface Application {
+  _id: string;
+  vacancyId: string;
+  vacancyTitle: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  cvMimeType: string; // e.g., 'application/pdf'
+  cvBase64: string; // CV stored as a Base64 string
+  agreedToTerms: boolean;
+  agreedToPrivacy: boolean;
+  createdAt: Date;
+}
