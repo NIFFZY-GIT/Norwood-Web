@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-// FIX 1: 'Db' type is removed as it's not explicitly used.
 import { ObjectId } from 'mongodb'; 
 import { Vacancy } from '@/lib/types';
 
-// NOTE: In a real application, you would add authentication middleware here
-// to ensure only authorized admins can access these endpoints.
-
 const getDb = async () => {
     const client = await clientPromise;
-    // The return type of client.db() is inferred, so we don't need to annotate it.
     return client.db(process.env.DB_NAME);
 };
 
@@ -55,25 +50,25 @@ export async function POST(req: NextRequest) {
 }
 
 // PUT (update) an existing vacancy
-export async function PUT(req: NextRequest, { params }: { params: { id: string[] } }) {
+export async function PUT(
+  req: NextRequest, 
+  context: { params: { id: string[] } } // <-- CORRECTED
+) {
   try {
-    const id = params.id?.[0];
+    const id = context.params.id?.[0]; // <-- CORRECTED
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
     }
 
     const body = await req.json();
     
-    // --- THE FIX IS HERE ---
-    // This comment explicitly tells ESLint to ignore the unused variable errors on the next line.
-    // This is the correct way to handle intentional exceptions to a rule.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, createdAt, ...updateData } = body; 
     
     const db = await getDb();
     const result = await db.collection('vacancies').updateOne(
       { _id: new ObjectId(id) },
-      { $set: updateData } // Only the 'rest' of the data is used for the update
+      { $set: updateData }
     );
 
     if (result.matchedCount === 0) {
@@ -86,11 +81,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string[]
   }
 }
 
-
 // DELETE a vacancy
-export async function DELETE(req: NextRequest, { params }: { params: { id: string[] } }) {
+export async function DELETE(
+  req: NextRequest, 
+  context: { params: { id: string[] } } // <-- CORRECTED
+) {
     try {
-        const id = params.id?.[0];
+        const id = context.params.id?.[0]; // <-- CORRECTED
         if (!id || !ObjectId.isValid(id)) {
             return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
         }
