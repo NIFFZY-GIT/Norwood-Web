@@ -10,7 +10,7 @@ export default async function AnalyticsPage() {
     <>
       <header className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 dark:text-white">Site Analytics</h1>
-        <p className="text-slate-600 dark:text-slate-400 mt-1">Detailed insights into your site's performance.</p>
+        <p className="text-slate-600 dark:text-slate-400 mt-1">Detailed insights into your site&apos;s performance.</p>
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:gap-6">

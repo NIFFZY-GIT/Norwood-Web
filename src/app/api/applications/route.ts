@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { Db, ObjectId } from 'mongodb';
+// FIX: Removed 'Db' and 'ObjectId' as they are not used or can be inferred.
 import nodemailer from 'nodemailer';
 import { Application } from '@/lib/types';
 
@@ -45,18 +45,18 @@ export async function POST(req: NextRequest) {
       cvBase64,
       agreedToTerms: true, // Assuming checkbox validation is on the client
       agreedToPrivacy: true,
-      // `createdAt` will be added by MongoDB or here
     };
 
     // Save to database
     const client = await clientPromise;
-    const db: Db = client.db(process.env.DB_NAME);
+    // The type for 'db' is now inferred by TypeScript, so no need for explicit 'Db' type.
+    const db = client.db(process.env.DB_NAME); 
     const result = await db.collection('applications').insertOne({
         ...newApplication,
         createdAt: new Date(),
     });
 
-    // Send email notification (fire-and-forget, don't block response)
+    // Send email notification
     try {
       const transporter = createTransporter();
       await transporter.sendMail({
@@ -75,7 +75,6 @@ export async function POST(req: NextRequest) {
       console.log('Notification email sent successfully.');
     } catch (emailError) {
         console.error('Failed to send notification email:', emailError);
-        // Do not fail the request if email fails, just log it.
     }
 
     return NextResponse.json({ message: 'Application submitted successfully!', applicationId: result.insertedId }, { status: 201 });

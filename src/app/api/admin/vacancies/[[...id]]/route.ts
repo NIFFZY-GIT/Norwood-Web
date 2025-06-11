@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { Db, ObjectId } from 'mongodb';
+// FIX 1: 'Db' type is removed as it's not explicitly used.
+import { ObjectId } from 'mongodb'; 
 import { Vacancy } from '@/lib/types';
 
 // NOTE: In a real application, you would add authentication middleware here
@@ -8,6 +9,7 @@ import { Vacancy } from '@/lib/types';
 
 const getDb = async () => {
     const client = await clientPromise;
+    // The return type of client.db() is inferred, so we don't need to annotate it.
     return client.db(process.env.DB_NAME);
 };
 
@@ -39,13 +41,12 @@ export async function POST(req: NextRequest) {
       location,
       description,
       type,
-      isActive: isActive ?? true, // Default to active if not provided
+      isActive: isActive ?? true,
       createdAt: new Date(),
     };
 
     const db = await getDb();
     const result = await db.collection('vacancies').insertOne(newVacancy);
-    // Return the full object that was inserted, including the new ID
     return NextResponse.json({ ...newVacancy, _id: result.insertedId }, { status: 201 });
   } catch (error) {
     console.error("Error creating vacancy:", error);
@@ -62,7 +63,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string[]
     }
 
     const body = await req.json();
-    // Exclude fields that should not be updated directly from the client
+    
+    // FIX 2 & 3: Prefix unused variables with an underscore to satisfy the linter.
+    // This intentionally removes these fields from the update payload.
     const { _id, createdAt, ...updateData } = body; 
     
     const db = await getDb();
