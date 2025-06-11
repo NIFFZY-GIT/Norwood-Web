@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb'; 
-// We are not using the 'Vacancy' type directly here, so it can be removed
-// import { Vacancy } from '@/lib/types'; 
+
+// The 'Vacancy' type is not strictly needed here since we are constructing plain objects.
+// Removing it can simplify the file and reduce potential type conflicts during build.
 
 const getDb = async () => {
     const client = await clientPromise;
     return client.db(process.env.DB_NAME);
 };
 
-// GET function (no changes)
+// GET function (no changes needed)
 export async function GET() {
   try {
     const db = await getDb();
@@ -21,7 +22,7 @@ export async function GET() {
   }
 }
 
-// POST function (no changes)
+// POST function (no changes needed)
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
-    const newVacancy = { // Using a plain object instead of a typed one
+    const newVacancy = {
       title,
       department,
       location,
@@ -51,13 +52,18 @@ export async function POST(req: NextRequest) {
 }
 
 // PUT (update) an existing vacancy
-// --- THIS IS THE FINAL FIX ---
-// We use the simplest possible inline type for the context argument.
-export async function PUT(req: NextRequest, context: { params: { id: string[] } }) { 
+export async function PUT(
+  req: NextRequest,
+  // --- THIS IS THE CRITICAL FIX ---
+  // The second argument is an object containing `params`.
+  // The `params` object contains an OPTIONAL `id` key (`id?`).
+  // If `id` exists, it's a `string[]`. This is the exact type Next.js expects.
+  { params }: { params: { id?: string[] } }
+) {
   try {
-    const id = context.params.id?.[0];
+    const id = params.id?.[0]; 
     if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
+      return NextResponse.json({ message: 'Valid Vacancy ID is required for updating.' }, { status: 400 });
     }
 
     const body = await req.json();
@@ -82,12 +88,15 @@ export async function PUT(req: NextRequest, context: { params: { id: string[] } 
 }
 
 // DELETE a vacancy
-// --- APPLY THE SAME FIX HERE ---
-export async function DELETE(req: NextRequest, context: { params: { id: string[] } }) {
+export async function DELETE(
+  req: NextRequest,
+  // --- APPLY THE SAME CRITICAL FIX HERE ---
+  { params }: { params: { id?: string[] } }
+) {
     try {
-        const id = context.params.id?.[0];
+        const id = params.id?.[0];
         if (!id || !ObjectId.isValid(id)) {
-            return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
+            return NextResponse.json({ message: 'Valid Vacancy ID is required for deleting.' }, { status: 400 });
         }
 
         const db = await getDb();
