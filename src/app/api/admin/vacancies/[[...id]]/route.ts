@@ -8,7 +8,7 @@ const getDb = async () => {
     return client.db(process.env.DB_NAME);
 };
 
-// GET all vacancies
+// GET all vacancies (No change needed)
 export async function GET() {
   try {
     const db = await getDb();
@@ -20,7 +20,7 @@ export async function GET() {
   }
 }
 
-// POST a new vacancy
+// POST a new vacancy (No change needed)
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -52,10 +52,13 @@ export async function POST(req: NextRequest) {
 // PUT (update) an existing vacancy
 export async function PUT(
   req: NextRequest, 
-  context: { params: { id: string[] } } // <-- CORRECTED
+  // --- THIS IS THE FIX ---
+  // We destructure params directly and provide the correct type.
+  { params }: { params: { id?: string[] } } 
 ) {
   try {
-    const id = context.params.id?.[0]; // <-- CORRECTED
+    // The 'id' is now correctly an optional array of strings.
+    const id = params.id?.[0]; 
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
     }
@@ -84,10 +87,11 @@ export async function PUT(
 // DELETE a vacancy
 export async function DELETE(
   req: NextRequest, 
-  context: { params: { id: string[] } } // <-- CORRECTED
+  // --- APPLY THE SAME FIX HERE ---
+  { params }: { params: { id?: string[] } }
 ) {
     try {
-        const id = context.params.id?.[0]; // <-- CORRECTED
+        const id = params.id?.[0];
         if (!id || !ObjectId.isValid(id)) {
             return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
         }
