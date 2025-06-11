@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ServerCrash, Briefcase } from "lucide-react";
 import { Vacancy } from "@/lib/types";
-// --- FIX: Import the correct components for the PUBLIC careers page ---
-import VacancyCard from "@/components/careers/VacancyCard";
+// --- FIX: Import the new VacancyRow component ---
+import VacancyRow from "@/components/careers/VacancyRow";
 import ApplicationFormModal from "@/components/careers/ApplicationFormModal";
 
 const CareersPage = () => {
@@ -19,10 +19,8 @@ const CareersPage = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const res = await fetch("/api/vacancies"); // Public API endpoint
-        if (!res.ok) {
-          throw new Error(`Failed to fetch vacancies: ${res.status}`);
-        }
+        const res = await fetch("/api/vacancies");
+        if (!res.ok) throw new Error(`Failed to fetch vacancies: ${res.status}`);
         const data: Vacancy[] = await res.json();
         setVacancies(data);
       } catch (err) {
@@ -48,7 +46,7 @@ const CareersPage = () => {
 
   const pageContainerVariants = {
     initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.15 } },
+    animate: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.1 } }, // Adjusted stagger
   };
 
   const heroTextVariants = {
@@ -60,7 +58,6 @@ const CareersPage = () => {
     <>
       <AnimatePresence>
         {selectedVacancy && (
-          // --- FIX: This now uses the correct modal, which does NOT need onSave ---
           <ApplicationFormModal
             vacancy={selectedVacancy}
             onClose={handleCloseModal}
@@ -76,7 +73,7 @@ const CareersPage = () => {
       >
         <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_30%_70%,#4c1d95AA_0%,#1e293b00_30%),radial-gradient(circle_at_70%_30%,#0f766eAA_0%,#1e293b00_25%)]" />
         
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <div className="text-center mb-20 md:mb-28">
             <motion.h1
               variants={heroTextVariants}
@@ -87,7 +84,7 @@ const CareersPage = () => {
             <motion.p
               variants={heroTextVariants}
               transition={{ delay: 0.3 }}
-              className="text-lg md:text-xl text-slate-300 max-w-xl mx-auto"
+              className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto"
             >
               Discover your next career opportunity and help us build the future. We are looking for passionate and talented individuals.
             </motion.p>
@@ -104,31 +101,34 @@ const CareersPage = () => {
 
           <AnimatePresence mode="wait">
             {isLoading ? (
-              <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col justify-center items-center h-60 text-slate-400">
-                <Loader2 className="animate-spin text-cyan-500 mb-6" size={64} />
-                <p className="text-2xl tracking-wider font-medium">Finding Opportunities...</p>
-              </motion.div>
+                // ... (loader code remains the same)
+                 <motion.div key="loader" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col justify-center items-center h-60 text-slate-400">
+                    <Loader2 className="animate-spin text-cyan-500 mb-6" size={64} />
+                    <p className="text-2xl tracking-wider font-medium">Finding Opportunities...</p>
+                </motion.div>
             ) : error ? (
-              <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12 px-8 bg-red-900/50 rounded-xl max-w-lg mx-auto border border-red-700/50">
-                <ServerCrash size={60} className="mx-auto text-red-300 mb-5" />
-                <h2 className="text-2xl font-semibold text-red-200 mb-3">Connection Lost</h2>
-                <p className="text-red-300/90">{error}</p>
-              </motion.div>
+                // ... (error code remains the same)
+                 <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12 px-8 bg-red-900/50 rounded-xl max-w-lg mx-auto border border-red-700/50">
+                    <ServerCrash size={60} className="mx-auto text-red-300 mb-5" />
+                    <h2 className="text-2xl font-semibold text-red-200 mb-3">Connection Lost</h2>
+                    <p className="text-red-300/90">{error}</p>
+                </motion.div>
             ) : vacancies.length === 0 ? (
-              <motion.div key="empty" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20 text-slate-400">
-                <Briefcase size={80} className="mx-auto text-cyan-500/50 mb-8" />
-                <h2 className="text-3xl font-semibold mb-4 text-slate-200">No Open Positions Currently</h2>
-                <p className="text-lg text-slate-500">We are always looking for talent. Check back soon!</p>
-              </motion.div>
+                // ... (empty state code remains the same)
+                <motion.div key="empty" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20 text-slate-400">
+                    <Briefcase size={80} className="mx-auto text-cyan-500/50 mb-8" />
+                    <h2 className="text-3xl font-semibold mb-4 text-slate-200">No Open Positions Currently</h2>
+                    <p className="text-lg text-slate-500">We are always looking for talent. Check back soon!</p>
+                </motion.div>
             ) : (
+              // --- FIX: Change the wrapper from a grid to a flex column ---
               <motion.div
-                key="vacanciesGrid"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                key="vacanciesList"
+                className="flex flex-col gap-4" // Use flex-col and gap instead of grid
                 variants={{ animate: { transition: { staggerChildren: 0.1 } } }}
               >
                 {vacancies.map((vacancy) => (
-                   // --- FIX: This now uses the correct card, which accepts onApplyNow ---
-                  <VacancyCard key={vacancy._id} vacancy={vacancy} onApplyNow={handleApplyNow} />
+                  <VacancyRow key={vacancy._id} vacancy={vacancy} onApplyNow={handleApplyNow} />
                 ))}
               </motion.div>
             )}
