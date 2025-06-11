@@ -8,14 +8,11 @@ const getDb = async () => {
 };
 
 // PUT (update) an existing vacancy
-export async function PUT(
-  req: NextRequest,
-  // For a required dynamic segment [id], the type is simple and stable.
-  { params }: { params: { id: string } } 
-) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(req: NextRequest, { params }: any) {
   try {
-    // The id is now a simple string, not an array.
-    const { id } = params; 
+    // We still safely access the 'id' as before.
+    const id: string = params.id; 
     
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ message: 'Valid Vacancy ID is required.' }, { status: 400 });
@@ -43,13 +40,10 @@ export async function PUT(
 }
 
 // DELETE a vacancy
-export async function DELETE(
-  req: NextRequest,
-  // Apply the same simple and stable type here.
-  { params }: { params: { id: string } }
-) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(req: NextRequest, { params }: any) {
     try {
-        const { id } = params;
+        const id: string = params.id;
 
         if (!id || !ObjectId.isValid(id)) {
             return NextResponse.json({ message: 'Valid Vacancy ID is required.' }, { status: 400 });
