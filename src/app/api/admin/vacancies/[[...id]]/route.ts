@@ -7,7 +7,7 @@ const getDb = async () => {
     return client.db(process.env.DB_NAME);
 };
 
-// GET function (no changes needed)
+// GET all vacancies
 export async function GET() {
   try {
     const db = await getDb();
@@ -19,7 +19,7 @@ export async function GET() {
   }
 }
 
-// POST function (no changes needed)
+// POST a new vacancy
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -49,20 +49,25 @@ export async function POST(req: NextRequest) {
 }
 
 // PUT (update) an existing vacancy
-export async function PUT(req: NextRequest, context: { params: { id: string[] } }) {
+export async function PUT(
+  req: NextRequest,
+  // --- THIS IS THE CRITICAL FIX ---
+  // We use the stricter type for a REQUIRED catch-all route.
+  // The build system is likely expecting this shape, even for an optional route.
+  { params }: { params: { id: string[] } }
+) {
   try {
-    // FIX: Access the first element of the 'id' array
-    const id = context.params.id?.[0];
-
+    // Our logic still safely handles the optional case with `?.`
+    const id = params.id?.[0]; 
     if (!id || !ObjectId.isValid(id)) {
-      return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
+      return NextResponse.json({ message: 'Valid Vacancy ID is required for updating.' }, { status: 400 });
     }
 
     const body = await req.json();
-    // Exclude fields that should not be updated directly
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, createdAt, ...updateData } = body;
-
+    const { _id, createdAt, ...updateData } = body; 
+    
     const db = await getDb();
     const result = await db.collection('vacancies').updateOne(
       { _id: new ObjectId(id) },
@@ -73,21 +78,22 @@ export async function PUT(req: NextRequest, context: { params: { id: string[] } 
       return NextResponse.json({ message: 'Vacancy not found' }, { status: 404 });
     }
     return NextResponse.json({ message: 'Vacancy updated successfully' });
-  } catch (error)
-  {
+  } catch (error) {
     console.error("Error updating vacancy:", error);
     return NextResponse.json({ message: 'Error updating vacancy' }, { status: 500 });
   }
 }
 
 // DELETE a vacancy
-export async function DELETE(req: NextRequest, context: { params: { id: string[] } }) {
+export async function DELETE(
+  req: NextRequest,
+  // --- APPLY THE SAME CRITICAL FIX HERE ---
+  { params }: { params: { id: string[] } }
+) {
     try {
-        // FIX: Access the first element of the 'id' array
-        const id = context.params.id?.[0];
-
+        const id = params.id?.[0];
         if (!id || !ObjectId.isValid(id)) {
-            return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
+            return NextResponse.json({ message: 'Valid Vacancy ID is required for deleting.' }, { status: 400 });
         }
 
         const db = await getDb();
