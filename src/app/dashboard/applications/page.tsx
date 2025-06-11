@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Application } from "@/lib/types";
-// --- FIX: Imported FileText icon ---
 import { Loader2, ServerCrash, User, Download, Mail, Phone, Briefcase, FileText } from "lucide-react";
 
 const ApplicationsPage = () => {
@@ -21,8 +20,12 @@ const ApplicationsPage = () => {
                 }
                 const data = await res.json();
                 setApplications(data);
-            } catch (err: any) {
-                setError(err.message);
+            } catch (err: unknown) { // <-- FIX is here
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("An unexpected error occurred.");
+                }
             } finally {
                 setIsLoading(false);
             }
@@ -52,7 +55,6 @@ const ApplicationsPage = () => {
             <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-6">Job Applications</h1>
             {applications.length === 0 ? (
                 <div className="text-center py-20 text-slate-500 dark:text-slate-400">
-                    {/* This line will now work correctly */}
                     <FileText size={60} className="mx-auto mb-4" />
                     <p>No applications have been submitted yet.</p>
                 </div>

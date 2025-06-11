@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getSession } from '@/lib/session'; // We'll create a client-side version of this
+// FIX 1: The unused 'getSession' import is removed.
 import { User, UserSession } from '@/lib/types';
 import UserListItem from '@/components/dashboard/settings/UserListItem';
 import CreateUserModal from '@/components/dashboard/settings/CreateUserModal';
@@ -12,16 +12,19 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // The session is now managed by the layout, but we might need the ID here.
   const [currentSession, setCurrentSession] = useState<UserSession | null>(null);
 
   useEffect(() => {
     // A simple function to get session data on the client if needed
     const fetchClientSession = async () => {
-        const res = await fetch('/api/auth/session'); // Assuming you have such an endpoint
-        if (res.ok) {
-            const data = await res.json();
-            setCurrentSession(data);
+        try {
+            const res = await fetch('/api/auth/session'); // Assuming you have such an endpoint
+            if (res.ok) {
+                const data = await res.json();
+                setCurrentSession(data);
+            }
+        } catch (err) {
+            console.error("Failed to fetch client session:", err);
         }
     };
 
@@ -33,21 +36,27 @@ export default function SettingsPage() {
             if (!res.ok) throw new Error('Failed to fetch users');
             const data = await res.json();
             setUsers(data);
-        } catch (err: any) {
-            setError(err.message);
+        // FIX 2: Change 'any' to 'unknown' and perform a type check.
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred while fetching users.");
+            }
         } finally {
             setIsLoading(false);
         }
     };
     
-    fetchClientSession();
-    fetchUsers();
+    // Using Promise.all to run both fetches concurrently
+    Promise.all([fetchClientSession(), fetchUsers()]);
+
   }, []);
 
 
   const handleUserCreated = (newUser: User) => {
     setUsers(prevUsers => [newUser, ...prevUsers]);
-    setIsModalOpen(false); // Close modal on success
+    setIsModalOpen(false);
   };
 
   const handleDeleteUser = async (userId: string, username: string) => {
@@ -57,15 +66,16 @@ export default function SettingsPage() {
       const res = await fetch(`/api/users/${userId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete user');
       setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
-    } catch (err: any) {
-      setError(err.message);
+    // FIX 3: Change 'any' to 'unknown' and perform a type check.
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError("An unknown error occurred while deleting the user.");
+        }
     }
   };
-
-  // The main layout already shows a loader if the session is loading.
-  // We only need to show a loader here for this page's specific data.
   
-  // Notice: No <DashboardLayout> wrapper here!
   return (
     <>
       <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-6 sm:mb-8 gap-4">

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// No need to import DashboardLayout or useRouter here anymore.
 import { Item } from '@/lib/types';
 import ItemCard from '@/components/dashboard/ItemCard';
 import AddItemModal from '@/components/dashboard/AddItemModal';
@@ -14,8 +13,6 @@ export default function ItemsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
 
-  // This useEffect now ONLY focuses on fetching item data.
-  // Session checks are handled by the parent layout.tsx.
   useEffect(() => {
     const fetchItems = async () => {
       setIsLoading(true);
@@ -33,8 +30,13 @@ export default function ItemsPage() {
             createdAt: new Date(item.createdAt),
           }))
         );
-      } catch (err: any) {
-        setError(err.message);
+      // FIX 1: Change 'any' to 'unknown' and add a type check.
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occurred while fetching items.');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -59,8 +61,13 @@ export default function ItemsPage() {
       const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
       setItems(prev => prev.filter(i => i._id !== id));
-    } catch (err: any) {
-      setError(err.message);
+    // FIX 2: Change 'any' to 'unknown' and add a type check.
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred while deleting the item.');
+      }
     }
   };
 
@@ -75,10 +82,6 @@ export default function ItemsPage() {
     setEditingItem(null);
   };
 
-  // The session loading state is no longer needed here.
-  // The layout.tsx prevents this page from ever rendering if there's no session.
-
-  // Notice: No <DashboardLayout> wrapper! The page returns its content directly.
   return (
     <>
       <header className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">

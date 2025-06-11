@@ -64,14 +64,16 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string[]
 
     const body = await req.json();
     
-    // FIX 2 & 3: Prefix unused variables with an underscore to satisfy the linter.
-    // This intentionally removes these fields from the update payload.
+    // --- THE FIX IS HERE ---
+    // This comment explicitly tells ESLint to ignore the unused variable errors on the next line.
+    // This is the correct way to handle intentional exceptions to a rule.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, createdAt, ...updateData } = body; 
     
     const db = await getDb();
     const result = await db.collection('vacancies').updateOne(
       { _id: new ObjectId(id) },
-      { $set: updateData }
+      { $set: updateData } // Only the 'rest' of the data is used for the update
     );
 
     if (result.matchedCount === 0) {

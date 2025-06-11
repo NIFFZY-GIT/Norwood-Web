@@ -1,11 +1,12 @@
 import { getSession } from '@/lib/session';
 import AnalyticsChart from '@/components/dashboard/AnalyticsChart';
-import { UserSession, Item } from '@/lib/types';
+// FIX 1: The 'Item' type is removed from this import because it's not used.
+import { UserSession } from '@/lib/types';
 import { Package, Users, BarChartBig, ArrowUpRight } from 'lucide-react';
 
-// Mock function to get stats (can remain the same)
-async function getDashboardStats(_userId: string) {
-  // ... your existing stats function
+// Mock function to get stats
+// FIX 2: The '_userId' parameter is removed since it's not used in the function.
+async function getDashboardStats() {
   await new Promise(resolve => setTimeout(resolve, 300));
   return {
     totalItems: 73,
@@ -20,7 +21,8 @@ export default async function DashboardOverviewPage() {
   // here to display user-specific content. Next.js de-duplicates fetches.
   const session = (await getSession()) as UserSession; 
 
-  const stats = await getDashboardStats(session.userId);
+  // The function no longer needs the userId to be passed.
+  const stats = await getDashboardStats();
 
   // Notice there is NO <DashboardLayout> wrapper here anymore.
   return (

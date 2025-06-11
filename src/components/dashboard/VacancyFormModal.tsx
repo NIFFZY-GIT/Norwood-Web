@@ -5,15 +5,12 @@ import { Vacancy } from '@/lib/types';
 import { Loader2, X } from 'lucide-react';
 
 interface Props {
-    // --- FIX: Allow the vacancy prop to be null ---
     vacancy: Vacancy | null; 
     onClose: () => void;
     onSave: () => void;
 }
 
 const VacancyFormModal = ({ vacancy, onClose, onSave }: Props) => {
-    // This component's logic already handles the 'null' case correctly,
-    // so only the Props interface needed to be changed.
     const [formData, setFormData] = useState({
         title: vacancy?.title || '',
         department: vacancy?.department || '',
@@ -55,8 +52,13 @@ const VacancyFormModal = ({ vacancy, onClose, onSave }: Props) => {
                 throw new Error(errorData.message || 'An error occurred.');
             }
             onSave();
-        } catch (err: any) {
-            setError(err.message);
+        // FIX: Change 'any' to 'unknown' and perform a type check.
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred.");
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -72,7 +74,6 @@ const VacancyFormModal = ({ vacancy, onClose, onSave }: Props) => {
                     </button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-5 overflow-y-auto space-y-4">
-                    {/* Form fields remain the same */}
                     <input name="title" value={formData.title} onChange={handleChange} placeholder="Job Title (e.g., Senior Developer)" required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input name="department" value={formData.department} onChange={handleChange} placeholder="Department (e.g., Engineering)" required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600 dark:text-white" />

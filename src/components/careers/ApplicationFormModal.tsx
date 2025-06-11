@@ -45,8 +45,13 @@ const ApplicationFormModal = ({ vacancy, onClose }: Props) => {
       }
 
       setSuccess(true);
-    } catch (err: any) {
-      setError(err.message);
+    // FIX: Change 'any' to 'unknown' and perform a type check.
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred during submission.");
+      }
     } finally {
       setIsSubmitting(false);
     }

@@ -3,9 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Vacancy } from '@/lib/types';
 import { Loader2, PlusCircle, ServerCrash } from 'lucide-react';
-
-// --- CHECK 1: VERIFY THIS IMPORT ---
-// It MUST be importing 'VacancyAdminCard'.
 import VacancyAdminCard from '@/components/dashboard/VacancyAdminCard';
 import VacancyFormModal from '@/components/dashboard/VacancyFormModal';
 
@@ -18,13 +15,19 @@ const ManageVacanciesPage = () => {
 
     const fetchVacancies = async () => {
         setIsLoading(true);
+        setError(null); // Clear previous errors
         try {
             const res = await fetch('/api/admin/vacancies');
             if (!res.ok) throw new Error('Failed to fetch vacancies.');
             const data: Vacancy[] = await res.json();
             setVacancies(data);
-        } catch (err: any) {
-            setError(err.message);
+        // FIX 1: Change 'any' to 'unknown' and add a type check for safer error handling.
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("An unknown error occurred while fetching vacancies.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -52,12 +55,23 @@ const ManageVacanciesPage = () => {
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this vacancy?')) return;
         
+        setError(null); // Clear previous errors before trying a new action
+
         try {
             const res = await fetch(`/api/admin/vacancies/${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Failed to delete.');
-            fetchVacancies(); // Refresh list
-        } catch (err) {
-            alert('Deletion failed.');
+            if (!res.ok) {
+                 const errorData = await res.json();
+                 throw new Error(errorData.message || 'Failed to delete.');
+            }
+            fetchVacancies(); // Refresh list on success
+        // FIX 2: Use the 'err' variable to provide specific feedback, which also resolves the "unused var" error.
+        } catch (err: unknown) {
+             if (err instanceof Error) {
+                setError(err.message); // Display the specific error from the API
+            } else {
+                setError("An unknown error occurred during deletion.");
+            }
+            // The generic alert('Deletion failed.') is removed in favor of the error display block.
         }
     };
 
@@ -95,8 +109,6 @@ const ManageVacanciesPage = () => {
                     <div className="grid grid-cols-1 gap-6">
                         {vacancies.length > 0 ? (
                             vacancies.map(vacancy => (
-                                // --- CHECK 2: VERIFY THIS COMPONENT NAME ---
-                                // The component name here MUST be 'VacancyAdminCard'.
                                 <VacancyAdminCard 
                                     key={vacancy._id}
                                     vacancy={vacancy}
