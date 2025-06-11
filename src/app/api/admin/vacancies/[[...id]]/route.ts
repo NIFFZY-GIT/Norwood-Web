@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb'; 
-import { Vacancy } from '@/lib/types';
-
-// --- THIS IS THE FIX ---
-// We define a specific interface for our route's context.
-// For an optional catch-all route like [[...id]], the `id` parameter
-// on `params` is an optional array of strings.
-interface RouteContext {
-  params: {
-    id?: string[];
-  }
-}
+// We are not using the 'Vacancy' type directly here, so it can be removed
+// import { Vacancy } from '@/lib/types'; 
 
 const getDb = async () => {
     const client = await clientPromise;
@@ -40,7 +31,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
-    const newVacancy: Omit<Vacancy, '_id'> = {
+    const newVacancy = { // Using a plain object instead of a typed one
       title,
       department,
       location,
@@ -60,9 +51,11 @@ export async function POST(req: NextRequest) {
 }
 
 // PUT (update) an existing vacancy
-export async function PUT(req: NextRequest, context: RouteContext) { // <-- Use the new interface
+// --- THIS IS THE FINAL FIX ---
+// We use the simplest possible inline type for the context argument.
+export async function PUT(req: NextRequest, context: { params: { id: string[] } }) { 
   try {
-    const id = context.params.id?.[0]; // <-- Access id from the typed context
+    const id = context.params.id?.[0];
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
     }
@@ -89,9 +82,10 @@ export async function PUT(req: NextRequest, context: RouteContext) { // <-- Use 
 }
 
 // DELETE a vacancy
-export async function DELETE(req: NextRequest, context: RouteContext) { // <-- Use the new interface
+// --- APPLY THE SAME FIX HERE ---
+export async function DELETE(req: NextRequest, context: { params: { id: string[] } }) {
     try {
-        const id = context.params.id?.[0]; // <-- Access id from the typed context
+        const id = context.params.id?.[0];
         if (!id || !ObjectId.isValid(id)) {
             return NextResponse.json({ message: 'Valid Vacancy ID is required' }, { status: 400 });
         }
