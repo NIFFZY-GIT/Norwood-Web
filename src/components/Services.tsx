@@ -24,7 +24,7 @@ const services = [
   {
     id: 4,
     title: "Careers and Opportunity",
-    description: "Discover cost-effective and feature-rich phone services that keep you connected to your loved ones.",
+    description: "Unlock your potential with career paths designed for growth, innovation, and impact. Explore opportunities that empower you to thrive and make a difference.",
     image: "/c1.png",
   },
 ];

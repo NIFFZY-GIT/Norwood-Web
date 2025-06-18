@@ -20,7 +20,7 @@ const navLinks = [
 ];
 
 const socialLinks = [
-  { icon: FaFacebookF, href: "https://facebook.com", label: "Facebook" },
+  { icon: FaFacebookF, href: "https://www.facebook.com/norwoodteasinternational", label: "Facebook" },
   { icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
   { icon: FaTwitter, href: "https://twitter.com", label: "Twitter" },
   { icon: FaLinkedinIn, href: "https://linkedin.com", label: "LinkedIn" },
