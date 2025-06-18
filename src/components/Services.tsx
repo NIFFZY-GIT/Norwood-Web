@@ -25,7 +25,7 @@ const services = [
     id: 4,
     title: "Careers and Opportunity",
     description: "Discover cost-effective and feature-rich phone services that keep you connected to your loved ones.",
-    image: "/i4.png",
+    image: "/c1.png",
   },
 ];
 

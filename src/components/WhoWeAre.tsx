@@ -48,7 +48,7 @@ const WhoWeAre = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             whileHover={{ scale: 1.05 }}
-            src="/people1.jpg"
+            src="/t1.png"
             alt="Team"
             className="w-3/4 rounded-lg shadow-lg"
           />
@@ -57,7 +57,7 @@ const WhoWeAre = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             whileHover={{ scale: 1.1, rotate: 2 }}
-            src="/people2.jpg"
+            src="/c2.png"
             alt="Customer Interaction"
             className="absolute bottom-0 right-0 w-1/2 rounded-lg shadow-lg border-4 border-white"
           />

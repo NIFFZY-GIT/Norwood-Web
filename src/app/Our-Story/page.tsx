@@ -84,7 +84,7 @@ const OurStorySection = () => {
             
             <div className="!mt-8 flex items-center gap-4">
               <Image
-                src="/wiranga-karavita.png"
+                src="/ceo.png"
                 alt="Wiranga Karavita, Founder & CEO"
                 width={64}
                 height={64}
