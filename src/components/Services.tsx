@@ -7,25 +7,25 @@ const services = [
     id: 1,
     title: "Retail Selling",
     description: "We sell our products to Shops and outlets where customers can visit.",
-    image: "next.svg", // Replace with actual image paths
+    image: "/i1.png", // Replace with actual image paths
   },
   {
     id: 2,
     title: "Online Orders",
     description: "We sell our products through website and customers can place their order online.",
-    image: "vercel.svg",
+    image: "/i2.png",
   },
   {
     id: 3,
     title: "Selling Agencies",
     description: "We sell our agencies to business partners who have the ability to maintain the agency and do the sales under our company control.",
-    image: "/service3.jpg",
+    image: "/i3.png",
   },
   {
     id: 4,
-    title: "Phone Services",
+    title: "Careers and Opportunity",
     description: "Discover cost-effective and feature-rich phone services that keep you connected to your loved ones.",
-    image: "/service4.jpg",
+    image: "/i4.png",
   },
 ];
 

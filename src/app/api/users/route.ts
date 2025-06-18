@@ -61,7 +61,7 @@ interface CreateUserPayload {
     username: string;
     email?: string;
     password?: string;
-    isAdmin?: boolean;
+    isAdmin?: boolean; // This field from the payload will be ignored.
 }
 
 // POST /api/users (Create User) - NO ADMIN CHECK
@@ -77,7 +77,8 @@ export async function POST(request: NextRequest) {
 
     try {
         const body = await request.json() as CreateUserPayload;
-        const { username, email, password, isAdmin: makeAdmin } = body;
+        // We destructure isAdmin from the body but will ignore its value.
+        const { username, email, password } = body;
 
         if (!username || !password) {
             return NextResponse.json({ message: 'Username and password are required' }, { status: 400 });
@@ -107,34 +108,20 @@ export async function POST(request: NextRequest) {
             username,
             passwordHash,
             createdAt: new Date(),
-            isAdmin: makeAdmin === true,
+            isAdmin: true, // MODIFICATION: Always set new users as admin.
         };
         if (email) {
             newUserToInsert.email = email;
         }
 
-        // The MongoDB driver's `insertOne` method is typed to accept a document
-        // that does not yet have an _id when the collection schema TSchema includes _id.
-        // The 'DocumentToInsert' type (Omit<UserDocument, '_id'>) should be directly compatible.
-        // If strictness still causes issues, an 'as any' can be a last resort, but usually not needed.
         const result: InsertOneResult<UserDocument> = await usersCollection.insertOne(newUserToInsert as UserDocument);
-        // The cast `as UserDocument` here might seem counter-intuitive because newUserToInsert lacks `_id`.
-        // However, insertOne's parameter is often typed as `OptionalUnlessRequiredId<TSchema>`,
-        // and `Omit<TSchema, '_id'>` is compatible with that.
-        // The error you got with OptionalId was because OptionalId<UserDocument> makes _id: ObjectId | undefined,
-        // which is not directly what insertOne might expect if its internal type for the document itself is TSchema.
-
-        // A more direct approach that often works if the driver's types are well-aligned:
-        // const result = await usersCollection.insertOne(newUserToInsert);
-        // If the above still fails, the `as UserDocument` cast on `newUserToInsert` is telling TS
-        // "trust me, the driver will handle the missing _id for insertion".
 
         const createdUser: User = {
-            _id: result.insertedId.toString(), // result.insertedId will be an ObjectId
+            _id: result.insertedId.toString(),
             username: newUserToInsert.username,
             email: newUserToInsert.email,
             createdAt: newUserToInsert.createdAt,
-            isAdmin: newUserToInsert.isAdmin,
+            isAdmin: newUserToInsert.isAdmin, // This will now always be true
         };
 
         return NextResponse.json(createdUser, { status: 201 });
