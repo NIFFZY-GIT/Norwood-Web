@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogOut, Settings, UserCircle2 } from 'lucide-react';
+import { Home, LogOut, Settings, UserCircle2 } from 'lucide-react';
 import { UserSession } from '@/lib/types';
 
 // A simple client-side function to get session info
@@ -77,6 +77,14 @@ export default function UserNav() {
             </p>
           </div>
           <Link
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+          >
+            <Home className="w-4 h-4 mr-2" />
+            Home
+          </Link>
+             <Link
             href="/dashboard/settings"
             onClick={() => setIsOpen(false)}
             className="flex items-center w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"

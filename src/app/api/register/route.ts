@@ -10,35 +10,46 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { username, password } = await req.json();
+    // --- MODIFICATION 1: Get `registrationCode` from the request body ---
+    const { username, password, registrationCode } = await req.json();
+    
+    // --- MODIFICATION 2: Read the secret code from your environment variables ---
+    const secretCode = process.env.REGISTRATION_SECRET_CODE;
 
-    if (!username || !password) {
-      return NextResponse.json({ message: 'Missing username or password' }, { status: 400 });
+    // --- MODIFICATION 3: Add validation for the registration code ---
+    if (!username || !password || !registrationCode) {
+      return NextResponse.json({ message: 'Missing username, password, or registration code' }, { status: 400 });
     }
+    
+    // Check if the provided code is valid.
+    if (registrationCode !== secretCode) {
+      return NextResponse.json(
+        { message: 'Invalid Registration Code.' },
+        { status: 403 } // 403 Forbidden is a great status code for this
+      );
+    }
+    
+    // --- The rest of your existing logic continues from here ---
 
     const client = await clientPromise;
-    // MODIFICATION: Use environment variable for the database name
     const db = client.db(process.env.MONGODB_DB_NAME); 
     const users = db.collection('users');
 
     const existingUser = await users.findOne({ username });
 
     if (existingUser) {
-      // This response is more specific and helpful to the frontend
       return NextResponse.json({ message: 'Username already exists' }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // MODIFICATION: Add `isAdmin: true` to the new user document
     const result = await users.insertOne({
       username,
-      passwordHash: hashedPassword, // Best practice: rename field to reflect it's a hash
+      passwordHash: hashedPassword,
       createdAt: new Date(),
       isAdmin: true, // This makes every new user an administrator
     });
 
-    // The response is slightly improved to be more consistent
     return NextResponse.json({ 
       message: 'User registered successfully', 
       userId: result.insertedId.toString() 
@@ -47,7 +58,6 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     console.error('Registration error:', error);
     
-    // MODIFICATION: Add specific check for duplicate key errors (safer than checking findOne)
     if (error && typeof error === 'object' && 'code' in error && (error as { code: number }).code === 11000) {
       return NextResponse.json({ message: 'Username already exists (database constraint).' }, { status: 409 });
     }
