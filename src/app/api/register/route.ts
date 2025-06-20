@@ -1,57 +1,71 @@
+// app/api/register/route.ts
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import bcrypt from 'bcryptjs';
 
 export async function POST(req: Request) {
-  // Check for MONGODB_DB_NAME environment variable
-  if (!process.env.MONGODB_DB_NAME) {
-    console.error('Registration error: MONGODB_DB_NAME environment variable not set.');
-    return NextResponse.json({ message: 'Server configuration error' }, { status: 500 });
-  }
-
   try {
-    const { username, password } = await req.json();
+    const body = await req.json();
+    const { email, password } = body;
 
-    if (!username || !password) {
-      return NextResponse.json({ message: 'Missing username or password' }, { status: 400 });
+    if (!email || !password) {
+      return NextResponse.json(
+        { message: 'Email and password are required' },
+        { status: 400 }
+      );
+    }
+    
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: 'Password must be at least 8 characters long' },
+        { status: 400 }
+      );
     }
 
     const client = await clientPromise;
-    // MODIFICATION: Use environment variable for the database name
-    const db = client.db(process.env.MONGODB_DB_NAME); 
+    const db = client.db('norwooddb');
     const users = db.collection('users');
 
-    const existingUser = await users.findOne({ username });
+    const existingUser = await users.findOne({ email: email.toLowerCase() });
 
     if (existingUser) {
-      // This response is more specific and helpful to the frontend
-      return NextResponse.json({ message: 'Username already exists' }, { status: 409 });
+      return NextResponse.json(
+        { message: 'An account with this email already exists.' },
+        { status: 409 }
+      );
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // MODIFICATION: Add `isAdmin: true` to the new user document
-    const result = await users.insertOne({
-      username,
-      passwordHash: hashedPassword, // Best practice: rename field to reflect it's a hash
+    const newUser = {
+      email: email.toLowerCase(),
+      password: hashedPassword,
+        role: 'user',
       createdAt: new Date(),
-      isAdmin: true, // This makes every new user an administrator
-    });
+    };
 
-    // The response is slightly improved to be more consistent
-    return NextResponse.json({ 
-      message: 'User registered successfully', 
-      userId: result.insertedId.toString() 
+    const result = await users.insertOne(newUser);
+
+    return NextResponse.json({
+      message: 'User registered successfully',
+      userId: result.insertedId,
     }, { status: 201 });
 
-  } catch (error: unknown) {
-    console.error('Registration error:', error);
+  } catch (error: unknown) { // MODIFIED: Changed 'any' to 'unknown'
     
-    // MODIFICATION: Add specific check for duplicate key errors (safer than checking findOne)
-    if (error && typeof error === 'object' && 'code' in error && (error as { code: number }).code === 11000) {
-      return NextResponse.json({ message: 'Username already exists (database constraint).' }, { status: 409 });
+    // MODIFIED: Added a type check to safely handle the error
+    if (error instanceof Error) {
+      console.error('REGISTRATION_ERROR:', error.message);
+      return NextResponse.json(
+        { message: `An internal server error occurred: ${error.message}` },
+        { status: 500 }
+      );
+    } else {
+      console.error('REGISTRATION_ERROR: An unknown error occurred', error);
+      return NextResponse.json(
+        { message: 'An unexpected internal server error occurred.' },
+        { status: 500 }
+      );
     }
-    
-    return NextResponse.json({ message: 'An internal server error occurred' }, { status: 500 });
   }
 }

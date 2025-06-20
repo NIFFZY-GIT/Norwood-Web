@@ -1,11 +1,8 @@
-// src/app/dashboard/layout.tsx
-import { getSession } from '@/lib/session';
+import { getSession } from '@/lib/session'; // Your server-side session function
 import { redirect } from 'next/navigation';
+import DashboardLayoutComponent from '@/components/dashboard/DashboardLayout'; // A better name
 import { UserSession } from '@/lib/types';
-import DashboardLayoutComponent from '@/components/dashboard/DashboardLayout';
 
-// This is the correct, simple layout file.
-// Notice we have removed the unused imports for Header and Footer.
 export default async function DashboardLayout({
   children,
 }: {
@@ -13,12 +10,12 @@ export default async function DashboardLayout({
 }) {
   const session = await getSession() as UserSession | null;
 
-  // This check is perfect.
   if (!session?.userId) {
     redirect('/login');
   }
 
-  // Pass the session and children to the client component that handles the UI.
+  // The DashboardLayoutComponent from your components folder adds the sidebar
+  // and the main content area with its padding.
   return (
     <DashboardLayoutComponent session={session}>
       {children}

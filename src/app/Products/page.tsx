@@ -31,12 +31,10 @@ interface StarProps {
 }
 
 const ProductsPage = () => {
-  // --- STATE VARIABLE DEFINITIONS - THESE MUST BE HERE ---
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stars, setStars] = useState<StarProps[]>([]);
-  // --- END OF STATE VARIABLE DEFINITIONS ---
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -67,7 +65,6 @@ const ProductsPage = () => {
     };
     fetchItems();
 
-    // Generate star properties
     const generatedStars: StarProps[] = [...Array(30)].map((_, i) => ({
       key: `star-${i}`,
       style: {
@@ -93,15 +90,17 @@ const ProductsPage = () => {
 
   }, []);
 
+  // --- FIX APPLIED HERE ---
   const pageContainerVariants = {
     initial: { opacity: 0 },
     animate: { opacity: 1, transition: { duration: 0.5, staggerChildren: 0.15 } },
-  };
+  } as const;
 
+  // --- FIX APPLIED HERE ---
   const heroTextVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "circOut" } },
-  };
+  } as const;
 
   const features = [
     { icon: Flame, text: "Small-Batch Roasted", delay: 0.8 },
@@ -121,7 +120,6 @@ const ProductsPage = () => {
         <motion.div
           className="absolute inset-0"
           style={{
-            // FIXED: Replaced shorthand 'background' with 'backgroundImage'
             backgroundImage: "radial-gradient(circle at 30% 70%, #842d0bAA 0%, #11182700 30%), radial-gradient(circle at 70% 30%, #d97706AA 0%, #11182700 25%)",
             backgroundRepeat: "no-repeat",
           }}
@@ -150,7 +148,7 @@ const ProductsPage = () => {
         <div className="text-center mb-20 md:mb-28">
           <motion.h1
             variants={heroTextVariants}
-            transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 80 }}
+            // transition prop removed, it's now handled by the variant
             className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 leading-tight"
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-500 to-red-500">
@@ -159,7 +157,7 @@ const ProductsPage = () => {
           </motion.h1>
           <motion.p
              variants={heroTextVariants}
-             transition={{ duration: 0.7, delay: 0.5 }}
+             // transition prop removed, it's now handled by the variant
             className="text-lg md:text-xl text-slate-300 max-w-xl mx-auto mb-10"
           >
             Bold flavors, premium ingredients, and an unforgettable crunch in every single bite.
@@ -184,7 +182,7 @@ const ProductsPage = () => {
 
          <motion.div
             variants={heroTextVariants}
-            transition={{duration: 0.6, delay: 1.3}}
+            // transition prop removed
             className="mb-12 text-center md:text-left"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white">Our Creations</h2>

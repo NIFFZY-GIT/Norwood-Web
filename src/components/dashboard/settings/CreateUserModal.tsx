@@ -1,7 +1,7 @@
 // src/components/dashboard/settings/CreateUserModal.tsx
 'use client';
 import { useState, FormEvent } from 'react';
-import { X, Loader2, UserPlus, KeyRound } from 'lucide-react';
+import { X, Loader2, UserPlus, Mail, KeyRound } from 'lucide-react';
 import { User } from '@/lib/types';
 
 interface CreateUserModalProps {
@@ -12,10 +12,8 @@ interface CreateUserModalProps {
 
 export default function CreateUserModal({ isOpen, onClose, onUserCreated }: CreateUserModalProps) {
   const [username, setUsername] = useState('');
-  // MODIFICATION: Email state removed
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // MODIFICATION: Added state for confirm password
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,21 +23,8 @@ export default function CreateUserModal({ isOpen, onClose, onUserCreated }: Crea
     setError('');
     setIsLoading(true);
 
-    // MODIFICATION: Updated validation logic
-    if (!username || !password) {
-      setError('Username and password are required.');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+    if (!username || !email || !password) {
+      setError('All fields except admin status are required.');
       setIsLoading(false);
       return;
     }
@@ -48,8 +33,7 @@ export default function CreateUserModal({ isOpen, onClose, onUserCreated }: Crea
       const res = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // MODIFICATION: Removed email from the request body
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       if (res.ok) {
@@ -69,10 +53,10 @@ export default function CreateUserModal({ isOpen, onClose, onUserCreated }: Crea
   };
 
   const handleClose = () => {
-    // MODIFICATION: Updated state reset logic
     setUsername('');
+    setEmail('');
     setPassword('');
-    setConfirmPassword('');
+   
     setError('');
     onClose();
   };
@@ -95,24 +79,18 @@ export default function CreateUserModal({ isOpen, onClose, onUserCreated }: Crea
                 <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" required />
             </div>
           </div>
-          
-          {/* MODIFICATION: Email input section completely removed */}
-
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+            <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" required />
+            </div>
+          </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
              <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                {/* MODIFICATION: Added minLength attribute */}
-                <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" required minLength={8} />
-            </div>
-          </div>
-
-          {/* MODIFICATION: Added Confirm Password field */}
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm Password</label>
-             <div className="relative">
-                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" required placeholder="Re-enter password" />
+                <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-3 pl-10 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white focus:ring-sky-500 focus:border-sky-500" required />
             </div>
           </div>
 
