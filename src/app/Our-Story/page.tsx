@@ -1,4 +1,4 @@
-// src/components/OurStory.tsx or similar
+// src/components/OurStory.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -26,16 +26,15 @@ const OurStorySection = () => {
         >
           <h2 className="text-5xl sm:text-6xl font-black mb-4 leading-tight">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-orange-500 to-red-500">
-              Forged in Flavor
+              Our Story
             </span>
           </h2>
           <p className="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto">
-            It all started with a simple craving, a hot pan, and a relentless quest for the ultimate crunch.
+            “Many compete, but none are my rivals.”
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-16 items-center">
-          
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -43,20 +42,14 @@ const OurStorySection = () => {
             transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
             className="relative group"
           >
-            {/* 
-              FIX APPLIED HERE:
-              Replaced `aspect-w-4 aspect-h-3` with the modern, built-in Tailwind class `aspect-[4/3]`.
-              This gives the div a defined size, allowing the `fill` Image to be visible.
-            */}
             <div className="overflow-hidden rounded-xl shadow-2xl shadow-black/30 aspect-[4/3]">
               <Image
-                src="/bite1.png" // Ensure this file exists in your `/public` folder
+                src="/bite1.png"
                 alt="A delicious snack bite"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
-            
             <div className="absolute bottom-4 right-4 bg-slate-800/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-slate-700">
               <h3 className="text-base md:text-lg font-bold text-amber-400">Est. 2015</h3>
               <p className="text-slate-300 text-xs md:text-sm">
@@ -79,12 +72,30 @@ const OurStorySection = () => {
               </h3>
             </div>
             <p className="text-lg text-slate-300 leading-relaxed">
-              What began as a personal obsession—toasting, spicing, and tasting until we found the perfect recipe—quickly became something we had to share. We believe that great snacks are an experience, a moment of pure, unadulterated joy.
+              In 2015, I began Norwood Empire not in a grand factory or office, but in a humble home kitchen nestled in the highlands of Sri Lanka. With a deep love for our island&apos; unique flavors and a dream to share them with the world, I started crafting snacks that told a story – not just of taste, but of culture, community, and home.
             </p>
             <p className="text-lg text-slate-300 leading-relaxed">
-              We hunt down the boldest spices and finest all-natural ingredients. Every batch is crafted with the same passion and attention to detail as our very first. This isn&apos;t just business; it&apos;s our craft.
+              Our journey wasn&apos;t always easy. There were late nights, countless trials, But with every packet we sealed, every smile we received from a loyal customer, we found the strength to keep going. Today, Norwood Empire proudly delivers a range of snacks and sweets that capture the soul of Sri Lankan cuisine
             </p>
-
+            {/* FIX APPLIED HERE: Removed the redundant, outer <p> tag */}
+            <p className="text-lg text-slate-300 leading-relaxed">
+              To the young dreamers out there – let this be a reminder: you don&apos;t need a perfect start, just a passionate heart. Trust your roots. Honor your story. And believe that small beginnings can grow into something truly meaningful.
+            </p>
+            
+            <div className="!mt-8 flex items-center gap-4">
+              <Image
+                src="/ceo.png"
+                alt="Wiranga Karavita, Founder & CEO"
+                width={64}
+                height={64}
+                className="rounded-full object-cover w-16 h-16 border-2 border-slate-700"
+              />
+              <div className="text-lg text-slate-300 leading-tight">
+                <p className="font-bold text-white">– Wiranga Karavita</p>
+                <p className="text-slate-400">Founder & CEO</p>
+                <p className="italic text-slate-400">Norwood Empire (PVT) Ltd.</p>
+              </div>
+            </div>
             <Link href="/Products" passHref>
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(245, 158, 11, 0.2)" }}
