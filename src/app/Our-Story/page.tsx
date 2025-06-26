@@ -91,7 +91,7 @@ const OurStorySection = () => {
                 className="rounded-full object-cover w-16 h-16 border-2 border-slate-700"
               />
               <div className="text-lg text-slate-300 leading-tight">
-                <p className="font-bold text-white">– Wiranga Karavita</p>
+                {/* <p className="font-bold text-white">– Wiranga Karavita</p> */}
                 <p className="text-slate-400">Founder & CEO</p>
                 <p className="italic text-slate-400">Norwood Empire (PVT) Ltd.</p>
               </div>
