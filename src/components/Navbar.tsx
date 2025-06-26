@@ -39,6 +39,7 @@ const Navbar = ({ session }: { session: SessionData | null }) => {
     { path: "/", label: "HOME" },
     { path: "/Products", label: "PRODUCTS" },
     { path: "/Our-Story", label: "OUR STORY" },
+    { path: "/Our-Companies", label: "OUR COMPANIES" },
     { path: "/Careers", label: "CAREERS" },
     { path: "/Contact-Us", label: "CONTACT US" },
   ];
@@ -52,9 +53,9 @@ const Navbar = ({ session }: { session: SessionData | null }) => {
         isScrolled ? "bg-white shadow-md" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between w-full h-20">
+      <div className="max-w-8xl mx-auto flex items-center justify-between w-full h-20">
         {/* Logo */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-5">
           <Link href="/">
             <Image
               src="/logo.png"
