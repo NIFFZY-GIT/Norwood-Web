@@ -19,7 +19,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   // Otherwise, for all public routes, render the Navbar, children, and Footer
   return (
     <>
-      <Navbar />
+      <Navbar session={null} />
       <main className="pt-20">{children}</main>
       <Footer />
     </>

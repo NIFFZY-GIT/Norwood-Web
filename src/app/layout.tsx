@@ -1,10 +1,10 @@
 // src/app/layout.tsx
 import { getSession, SessionData } from '@/lib/session';
-import Navbar from '@/components/Navbar'; // Adjust path if needed
-import Footer from '@/components/Footer';   // Adjust path if needed
-import { headers } from 'next/headers';     // 1. Import `headers` to read the pathname
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { headers } from 'next/headers'; // This is correct
 
-// ... your other global imports like fonts, css, etc.
+// Import your global styles and fonts here
 import './globals.css';
 
 export default async function RootLayout({
@@ -12,29 +12,27 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // 2. Fetch the session data on the server
+  // Fetch session data on the server
   const session: SessionData | null = await getSession();
 
-  // 3. Determine if the current route is part of the dashboard
+  // Determine the current path on the server
   const headersList = await headers();
-  const pathname = headersList.get('x-next-pathname') || ''; // Get the pathname from the request headers
+  const pathname = headersList.get('x-next-pathname') || '';
   const isDashboardRoute = pathname.startsWith('/dashboard');
 
   return (
     <html lang="en">
       <body>
-        {/* 4. Conditional Rendering Logic */}
+        {/* Perform conditional rendering based on the route */}
         {isDashboardRoute ? (
-          // For dashboard routes, render only the children.
-          // The DashboardLayout will be part of these children.
-          <>
-            {children}
-          </>
+          // For dashboard routes, only render the children.
+          // The dashboard's own layout will be inside {children}.
+          <>{children}</>
         ) : (
-          // For all public routes, render the full public layout.
+          // For all public-facing routes, render the full public layout
           <>
+            {/* Pass the session prop to the Navbar */}
             <Navbar session={session} />
-            {/* The pt-20 class ensures content doesn't hide behind the fixed navbar */}
             <main className="pt-20"> 
               {children}
             </main>
