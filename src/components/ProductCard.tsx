@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Item } from '@/lib/types';
 import NextImage from 'next/image';
 import { motion } from 'framer-motion';
-import { ScanLine, Info, ArrowRightCircle } from 'lucide-react';
+import { ScanLine, ArrowRightCircle } from 'lucide-react';
 
 interface ModernProductCardProps {
   item: Item;
@@ -15,17 +15,24 @@ const ModernProductCard = ({ item, index }: ModernProductCardProps) => {
   const router = useRouter();
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.98 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
       transition: {
-        duration: 0.45,
+        duration: 0.5,
         delay: index * 0.08,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
+  };
+
+  // Handler for keyboard accessibility on the CTA
+  const handleCTAKeydown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      router.push('/Contact-Us');
+    }
   };
 
   return (
@@ -33,10 +40,11 @@ const ModernProductCard = ({ item, index }: ModernProductCardProps) => {
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.15 }}
-      className="group relative flex flex-col bg-slate-800/60 backdrop-blur-md rounded-lg shadow-xl overflow-hidden transition-all duration-300 ease-out hover:shadow-slate-600/50 hover:ring-1 hover:ring-slate-500/70"
+      viewport={{ once: true, amount: 0.2 }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-black/25 backdrop-blur-lg shadow-2xl shadow-black/40 transition-all duration-500 hover:border-cyan-400/40 hover:shadow-cyan-400/10"
     >
-      <div className="relative w-full h-56 md:h-60 overflow-hidden">
+      {/* ===== Image Section ===== */}
+      <div className="relative h-60 w-full overflow-hidden">
         <NextImage
           src={item.imageBase64 || '/placeholder-image.png'}
           alt={item.name}
@@ -46,45 +54,49 @@ const ModernProductCard = ({ item, index }: ModernProductCardProps) => {
           unoptimized={item.imageBase64?.startsWith('data:image')}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
+        {/* Gradient overlay for text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/10 to-transparent"></div>
       </div>
 
-      <div className="p-4 md:p-5 flex flex-col flex-grow">
-        <h3
-          className="text-lg md:text-xl font-semibold text-slate-50 mb-1.5 truncate"
-          title={item.name}
-        >
-          {item.name}
-        </h3>
-
-        {item.itemCode && (
-          <div className="flex items-center text-xs text-slate-400 mb-3 font-mono">
-            <ScanLine size={13} className="mr-1.5 text-slate-500" />
-            <span>CODE: {item.itemCode}</span>
-          </div>
-        )}
-
-        <p className="text-slate-300 text-sm mb-5 leading-relaxed line-clamp-3 group-hover:text-slate-200 transition-colors duration-200">
-          {item.description}
-        </p>
-
-        <div className="mt-auto pt-3 border-t border-slate-700">
-          <button
-            className="w-full flex items-center justify-between text-sm text-slate-200 hover:text-white font-medium py-2.5 px-1 rounded-md transition-all duration-300 focus:outline-none group-hover:bg-slate-700/50 group-hover:px-3"
-            onClick={() => router.push('/Contact-Us')}
-            title={`View details for ${item.name}`}
+      {/* ===== Content Section ===== */}
+      <div className="flex flex-grow flex-col p-5">
+        {/* Main content: Name, Code, Description */}
+        <div className="flex-grow">
+          <h3
+            className="text-lg font-bold tracking-tight text-white"
+            title={item.name}
           >
-            <div className="flex items-center">
-              <Info
-                size={16}
-                className="mr-2 text-slate-400 group-hover:text-slate-200 transition-colors"
-              />
-              <span>Contact Us for more Details</span>
+            {item.name}
+          </h3>
+
+          {item.itemCode && (
+            <div className="mt-2 flex items-center font-mono text-xs text-cyan-400/80">
+              <ScanLine size={14} className="mr-2 opacity-70" />
+              <span>CODE: {item.itemCode}</span>
             </div>
+          )}
+
+          <p className="mt-4 text-sm leading-relaxed text-slate-300 line-clamp-3">
+            {item.description}
+          </p>
+        </div>
+
+        {/* Footer & Call to Action */}
+        <div className="mt-6 pt-4 border-t border-white/10">
+          <div
+            onClick={() => router.push('/Contact-Us')}
+            onKeyDown={handleCTAKeydown}
+            role="button"
+            tabIndex={0}
+            aria-label={`Inquire about ${item.name}`}
+            className="flex cursor-pointer items-center justify-between text-slate-300 transition-colors duration-300 hover:text-white focus:outline-none focus:text-white"
+          >
+            <span className="text-sm font-medium">Inquire for Details</span>
             <ArrowRightCircle
-              size={18}
-              className="opacity-60 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-0.5 text-slate-400 group-hover:text-white"
+              size={20}
+              className="transform opacity-70 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100"
             />
-          </button>
+          </div>
         </div>
       </div>
     </motion.div>
