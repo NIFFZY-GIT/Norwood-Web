@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+// Removed `useRouter` as it's no longer used
+import { useSearchParams } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
-import { User, Lock, Coffee, Eye, EyeOff } from 'lucide-react'; // <-- Imported User icon
+import { User, Lock, Coffee, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 
 // --- Motion Variants ---
@@ -60,7 +61,7 @@ const ImageSlideshow = () => {
 
 // --- Component with the actual form logic ---
 function LoginFormContent() {
-  const router = useRouter();
+  // --- FIX 1: Removed `useRouter` hook as it's no longer needed ---
   const searchParams = useSearchParams();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
@@ -88,7 +89,8 @@ function LoginFormContent() {
       });
 
       if (res.ok) {
-        router.push(redirectTo); // Redirect on success
+        // Hard navigation to ensure the server re-renders with the new session
+        window.location.href = redirectTo;
       } else {
         const data = await res.json().catch(() => ({ message: 'Invalid username or password.' }));
         setError(data.message || 'Something went wrong.');
@@ -177,7 +179,8 @@ function LoginFormContent() {
               </button>
             </motion.div>
           </motion.form>
-
+          
+          {/* --- FIX 2: Replaced ' with ' to fix linting error --- */}
           <motion.p variants={itemVariants} className="mt-8 text-sm text-center text-gray-400">
             Don&apos;t have an account?{' '}
             <a href="/register" className="font-semibold text-green-400 hover:text-green-300 hover:underline underline-offset-2">
@@ -212,7 +215,6 @@ export default function LoginPage() {
         }}
       />
       <Suspense fallback={
-        // A simple loading spinner or skeleton
         <div className="text-white text-lg flex items-center gap-2">
             <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

@@ -3,24 +3,25 @@
 
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
- // Import the new component
+import UserNav from './UserNav'; // Import the new component
 
 interface HeaderProps {
   onMobileMenuClick: () => void;
+  username: string; // Add username to the props
 }
 
 // A helper to get a nice title from the URL path
 function getPageTitle(pathname: string): string {
     if (pathname === '/dashboard') return 'Dashboard Overview';
     
-    const segment = pathname.split('/').pop() || '';
+    const segment = pathname.split('/').pop()?.replace(/-/g, ' ') || '';
     if (!segment) return 'Dashboard';
 
-    // Capitalize the first letter and return
-    return segment.charAt(0).toUpperCase() + segment.slice(1);
+    // Capitalize each word
+    return segment.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-export default function Header({ onMobileMenuClick }: HeaderProps) {
+export default function Header({ onMobileMenuClick, username }: HeaderProps) {
   const pathname = usePathname();
   const title = getPageTitle(pathname);
 
@@ -32,7 +33,7 @@ export default function Header({ onMobileMenuClick }: HeaderProps) {
           {/* Mobile menu button */}
           <button
             onClick={onMobileMenuClick}
-            className="md:hidden text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white"
+            className="lg:hidden text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white"
             aria-controls="sidebar-menu"
             aria-label="Open sidebar"
           >
@@ -47,8 +48,8 @@ export default function Header({ onMobileMenuClick }: HeaderProps) {
 
         {/* Right-side header content with the UserNav component */}
         <div className="flex items-center space-x-4">
-            {/* You can add other icons here, e.g., for notifications */}
-      
+          {/* You can add other icons here, e.g., for notifications */}
+          <UserNav username={username} />
         </div>
       </div>
     </header>
