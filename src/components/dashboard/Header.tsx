@@ -3,7 +3,7 @@
 
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
-import UserNav from '@/components/dashboard/UserNav'; // Import the new component
+ // Import the new component
 
 interface HeaderProps {
   onMobileMenuClick: () => void;
@@ -48,7 +48,7 @@ export default function Header({ onMobileMenuClick }: HeaderProps) {
         {/* Right-side header content with the UserNav component */}
         <div className="flex items-center space-x-4">
             {/* You can add other icons here, e.g., for notifications */}
-            <UserNav />
+      
         </div>
       </div>
     </header>
